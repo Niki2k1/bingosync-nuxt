@@ -12,8 +12,18 @@ provideRoomStore(store)
 onMounted(async () => {
   await Promise.all([store.loadBoard(), store.loadFeed(false)])
   store.connect()
+  if (boardEmpty.value) enterEditIfAllowed()
 })
 onBeforeUnmount(() => store.disconnect())
+
+const boardEmpty = computed(() => store.squares.value.every(s => !s.name))
+function enterEditIfAllowed() {
+  if (!store.player.value.spectator && !store.readonly) store.editMode.value = true
+}
+// A blank board is only useful once it has goals, so start (and restart after a new blank card) in edit mode.
+watch(boardEmpty, (empty) => {
+  if (empty) enterEditIfAllowed()
+})
 
 async function leave() {
   await $fetch(`/api/rooms/${store.id}/leave`, { method: 'POST' })
@@ -61,6 +71,16 @@ async function leave() {
               </div>
             </div>
           </div>
+          <UAlert
+            v-if="boardEmpty && !store.editMode.value && !store.player.value.spectator"
+            color="neutral"
+            variant="subtle"
+            icon="i-lucide-pencil"
+            title="This board is empty"
+            description="Use “Edit goals” above the board, then click a square to type its goal. Enter jumps to the next square."
+            class="max-w-xl"
+            :actions="[{ label: 'Edit goals', icon: 'i-lucide-pencil', onClick: () => { store.editMode.value = true } }]"
+          />
           <div v-if="store.socketState.value !== 'open'" class="text-xs text-muted inline-flex items-center gap-1.5">
             <UIcon name="i-lucide-loader-circle" class="size-3.5 animate-spin" />
             {{ store.socketState.value === 'connecting' ? 'Connecting to the room…' : 'Connection lost, reconnecting…' }}

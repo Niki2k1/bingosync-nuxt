@@ -19,17 +19,16 @@ const spectator = computed(() => store.player.value.spectator)
       />
     </UTooltip>
     <span v-if="spectator" class="text-xs text-muted ml-2">Spectators can't mark squares</span>
-    <UTooltip v-else :text="store.editMode.value ? 'Done editing' : 'Edit the goal text of squares'">
-      <UButton
-        :icon="store.editMode.value ? 'i-lucide-check' : 'i-lucide-pencil'"
-        :label="store.editMode.value ? 'Done' : undefined"
-        size="sm"
-        color="neutral"
-        :variant="store.editMode.value ? 'solid' : 'ghost'"
-        class="ml-2"
-        aria-label="Edit goals"
-        @click="store.editMode.value = !store.editMode.value"
-      />
-    </UTooltip>
+    <USeparator v-else orientation="vertical" class="h-6 mx-1" />
+    <UButton
+      v-if="!spectator"
+      :icon="store.editMode.value ? 'i-lucide-check' : 'i-lucide-pencil'"
+      :label="store.editMode.value ? 'Done editing' : 'Edit goals'"
+      size="sm"
+      :color="store.editMode.value ? 'primary' : 'neutral'"
+      :variant="store.editMode.value ? 'solid' : 'subtle'"
+      aria-label="Edit goals"
+      @click="store.editMode.value = !store.editMode.value"
+    />
   </div>
 </template>

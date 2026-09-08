@@ -15,6 +15,10 @@ const state = reactive({
   hideCard: false
 })
 const usesSeed = computed(() => (state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)))
+const modeItems = [
+  { label: 'Non-lockout', value: 'normal', description: 'Several players can own the same square.' },
+  { label: 'Lockout', value: 'lockout', description: 'First to mark a square keeps it.' }
+]
 const form = useTemplateRef('form')
 const submitting = ref(false)
 const formError = ref<string>()
@@ -67,14 +71,12 @@ async function generate() {
       <UForm id="new-card-form" ref="form" :state="state" class="space-y-4" @submit="generate">
         <UAlert v-if="formError" color="error" variant="subtle" :title="formError" />
         <SiteGameSelectFields v-model:group="state.group" v-model:variant="state.variant" v-model:custom-json="state.customJson" />
-        <div class="grid sm:grid-cols-2 gap-4">
-          <UFormField name="lockout" label="Mode">
-            <USelect v-model="state.mode" :items="[{ label: 'Non-lockout', value: 'normal' }, { label: 'Lockout', value: 'lockout' }]" value-key="value" class="w-full" />
-          </UFormField>
-          <UFormField v-if="usesSeed" name="seed" label="Seed" hint="Optional">
-            <UInputNumber v-model="state.seed" :min="0" :max="2147483647" placeholder="Random" class="w-full" :format-options="{ useGrouping: false }" />
-          </UFormField>
-        </div>
+        <UFormField name="mode" label="Mode">
+          <URadioGroup v-model="state.mode" :items="modeItems" variant="card" orientation="horizontal" indicator="hidden" :ui="{ fieldset: 'w-full gap-2', item: 'flex-1' }" />
+        </UFormField>
+        <UFormField v-if="usesSeed" name="seed" label="Seed" hint="Optional">
+          <UInputNumber v-model="state.seed" :min="0" :max="2147483647" placeholder="Random" class="w-full" :format-options="{ useGrouping: false }" />
+        </UFormField>
         <UCheckbox v-model="state.hideCard" label="Hide the card until someone reveals it" />
       </UForm>
     </template>

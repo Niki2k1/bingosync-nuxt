@@ -29,6 +29,14 @@ onUnmounted(() => clearInterval(timer))
 
 const { user } = useUserSession()
 const twitchEnabled = useTwitchEnabled()
+const modeItems = [
+  { label: 'Non-lockout', value: 'normal', description: 'Several players can own the same square.' },
+  { label: 'Lockout', value: 'lockout', description: 'First to mark a square keeps it.' }
+]
+const visibilityItems = [
+  { label: 'Private · invite link only', value: 'private' },
+  { label: 'Public · listed on the home page', value: 'public' }
+]
 const suggestedName = ref('')
 const state = reactive({
   name: '',
@@ -40,7 +48,7 @@ const state = reactive({
   seed: undefined as number | undefined,
   spectator: false,
   hideCard: false,
-  listed: true,
+  visibility: 'private' as 'private' | 'public',
   twitchOnly: false
 })
 const usesSeed = computed(() => (state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)))
@@ -67,7 +75,7 @@ async function makeRoom() {
         seed: state.seed ?? '',
         spectator: state.spectator,
         hideCard: state.hideCard,
-        listed: state.listed,
+        listed: state.visibility === 'public',
         twitchOnly: state.twitchOnly
       }
     })
@@ -159,16 +167,18 @@ async function makeRoom() {
             <UInput v-model="state.nickname" maxlength="50" class="w-full" autocomplete="nickname" />
           </UFormField>
           <SiteGameSelectFields v-model:group="state.group" v-model:variant="state.variant" v-model:custom-json="state.customJson" />
+          <UFormField name="mode" label="Mode">
+            <URadioGroup v-model="state.mode" :items="modeItems" variant="card" orientation="horizontal" indicator="hidden" :ui="{ fieldset: 'w-full gap-2', item: 'flex-1' }" />
+          </UFormField>
           <div class="grid sm:grid-cols-2 gap-4">
-            <UFormField name="lockout" label="Mode">
-              <USelect v-model="state.mode" :items="[{ label: 'Non-lockout', value: 'normal' }, { label: 'Lockout', value: 'lockout' }]" value-key="value" class="w-full" />
+            <UFormField name="visibility" label="Visibility">
+              <USelect v-model="state.visibility" :items="visibilityItems" value-key="value" class="w-full" />
             </UFormField>
             <UFormField v-if="usesSeed" name="seed" label="Seed" hint="Optional">
               <UInputNumber v-model="state.seed" :min="0" :max="2147483647" placeholder="Random" class="w-full" :format-options="{ useGrouping: false }" />
             </UFormField>
           </div>
           <div class="space-y-2 pt-1">
-            <UCheckbox v-model="state.listed" label="Show in the public room list" description="Off means only people with the invite link can find it." />
             <UCheckbox v-model="state.hideCard" label="Hide the card until someone reveals it" />
             <UCheckbox v-model="state.spectator" label="Join as a spectator" />
             <UCheckbox v-if="twitchEnabled && user?.twitch" v-model="state.twitchOnly" label="Only people signed in with Twitch can join" />
