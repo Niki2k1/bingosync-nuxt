@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GameInfo } from '../../../shared/types'
+import type { GameInfo } from '#shared/types'
 
 defineProps<{ game: GameInfo, full?: boolean }>()
 </script>

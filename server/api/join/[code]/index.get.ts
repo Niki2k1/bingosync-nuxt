@@ -1,4 +1,4 @@
-import type { InviteView } from '../../../../shared/types'
+import type { InviteView } from '#shared/types'
 
 export default defineEventHandler(async (event): Promise<InviteView> => {
   const code = requireIdParam('code', getRouterParam(event, 'code'))

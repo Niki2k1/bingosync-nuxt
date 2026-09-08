@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PlayView } from '../../../shared/types'
+import type { PlayView } from '#shared/types'
 
 definePageMeta({ layout: false })
 

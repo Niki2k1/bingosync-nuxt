@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import type { GameInfo } from '../../../../shared/types'
+import type { GameInfo } from '#shared/types'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 

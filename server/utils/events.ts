@@ -3,8 +3,8 @@ import { schema, useDb } from './db'
 import { hubBroadcast } from './hub'
 import { playerColor, playerToJson } from './players'
 import type { EventPayload, EventRow, Player, Room } from '../db/schema'
-import type { FeedEvent } from '../../shared/types'
-import { getVariant } from '../../shared/utils/games'
+import type { FeedEvent } from '#shared/types'
+import { getVariant } from '#shared/utils/games'
 
 const { events, rooms } = schema
 

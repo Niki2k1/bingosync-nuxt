@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FeedEvent } from '../../../shared/types'
+import type { FeedEvent } from '#shared/types'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 

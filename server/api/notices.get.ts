@@ -1,4 +1,4 @@
-import type { SiteNoticeJson } from '../../shared/types'
+import type { SiteNoticeJson } from '#shared/types'
 
 const ORDER = { notice: 0, announcement: 1, warning: 2, error: 3 }
 

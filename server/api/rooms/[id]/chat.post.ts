@@ -1,4 +1,4 @@
-import { chatSchema } from '../../../../shared/utils/schemas'
+import { chatSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   rateLimit(event, 'chat', 20, 10_000)

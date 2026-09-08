@@ -1,5 +1,5 @@
 import { integer, sqliteTable, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
-import type { PlayerColor, SquareColor } from '../../shared/utils/colors'
+import type { PlayerColor, SquareColor } from '#shared/utils/colors'
 
 const timestamp = () => integer({ mode: 'timestamp_ms' })
 

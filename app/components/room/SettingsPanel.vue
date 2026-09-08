@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getVariant } from '../../../shared/utils/games'
+import { getVariant } from '#shared/utils/games'
 
 const store = useRoomStore()
 const usesSeed = computed(() => getVariant(store.settings.value.game.variant)?.usesSeed ?? true)

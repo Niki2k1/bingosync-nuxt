@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { InviteView } from '../../../shared/types'
+import type { InviteView } from '#shared/types'
 
 const route = useRoute()
 const code = computed(() => String(route.params.code))

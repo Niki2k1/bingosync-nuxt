@@ -1,4 +1,4 @@
-import { joinRoomSchema } from '../../../../shared/utils/schemas'
+import { joinRoomSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   rateLimit(event, 'join-room', 30, 60_000)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { RoomListEntry, SiteNoticeJson } from '../../shared/types'
-import { CUSTOM_GROUP_ID } from '../../shared/utils/games'
+import type { RoomListEntry, SiteNoticeJson } from '#shared/types'
+import { CUSTOM_GROUP_ID } from '#shared/utils/games'
 
 const { data, refresh } = await useAsyncData('home', async () => {
   const [rooms, notices] = await Promise.all([

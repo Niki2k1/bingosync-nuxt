@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CUSTOM_GROUP_ID, GAME_CHOICES, variantsForGroup } from '../../../shared/utils/games'
+import { CUSTOM_GROUP_ID, GAME_CHOICES, variantsForGroup } from '#shared/utils/games'
 
 const CUSTOM_JSON_PLACEHOLDER = `Paste the board as a JSON list of goals, e.g.
 [ {"name": "Collect 3 Fire Flowers"},

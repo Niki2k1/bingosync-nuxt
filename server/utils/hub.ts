@@ -1,5 +1,5 @@
 import type { Peer } from 'crossws'
-import type { SocketMessage } from '../../shared/types'
+import type { SocketMessage } from '#shared/types'
 import { newId } from './ids'
 
 interface SocketTicket {

@@ -1,4 +1,4 @@
-import { newCardSchema } from '../../../../shared/utils/schemas'
+import { newCardSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   const id = requireIdParam('id', getRouterParam(event, 'id'))

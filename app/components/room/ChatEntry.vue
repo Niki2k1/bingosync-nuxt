@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FeedEvent } from '../../../shared/types'
+import type { FeedEvent } from '#shared/types'
 
 const props = defineProps<{ event: FeedEvent & { system?: boolean } }>()
 const store = useRoomStore()

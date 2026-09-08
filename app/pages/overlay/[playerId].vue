@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OverlayView } from '../../../shared/types'
+import type { OverlayView } from '#shared/types'
 
 definePageMeta({ layout: false })
 

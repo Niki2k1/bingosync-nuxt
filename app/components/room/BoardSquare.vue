@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { SquareJson } from '../../../shared/types'
-import { sortColors } from '../../../shared/utils/colors'
+import type { SquareJson } from '#shared/types'
+import { sortColors } from '#shared/utils/colors'
 
 const props = defineProps<{ square: SquareJson, hovered: boolean, spectator: boolean }>()
 const emit = defineEmits<{ select: [] }>()

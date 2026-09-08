@@ -5,10 +5,10 @@ import { filterString } from './filter'
 import { hubBroadcast, hubConnectedPlayerIds } from './hub'
 import { newId, newInviteCode } from './ids'
 import { recordAndPublish } from './events'
-import { colorsToMask, maskToColors, type PlayerColor } from '../../shared/utils/colors'
-import { getGroup, requireVariant } from '../../shared/utils/games'
+import { colorsToMask, maskToColors, type PlayerColor } from '#shared/utils/colors'
+import { getGroup, requireVariant } from '#shared/utils/games'
 import type { Game, Player, Room, Square } from '../db/schema'
-import type { GameInfo, HistoryEntry, RoomListEntry, RoomSettings, SquareJson } from '../../shared/types'
+import type { GameInfo, HistoryEntry, RoomListEntry, RoomSettings, SquareJson } from '#shared/types'
 
 const { rooms, games, squares, players } = schema
 

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import vm from 'node:vm'
-import { BLANK_ID, CUSTOM_FIXED_ID, CUSTOM_ISAAC_ID, CUSTOM_RANDOMIZED_ID, CUSTOM_SRL_V5_ID, requireVariant } from '../../shared/utils/games'
+import { BLANK_ID, CUSTOM_FIXED_ID, CUSTOM_ISAAC_ID, CUSTOM_RANDOMIZED_ID, CUSTOM_SRL_V5_ID, requireVariant } from '#shared/utils/games'
 
 export class GeneratorError extends Error {}
 export class InvalidBoardError extends Error {}

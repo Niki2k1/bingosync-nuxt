@@ -1,5 +1,5 @@
-import type { FeedEvent, PlayerJson, RoomSettings, SocketMessage, SquareJson } from '../../shared/types'
-import type { PlayerColor } from '../../shared/utils/colors'
+import type { FeedEvent, PlayerJson, RoomSettings, SocketMessage, SquareJson } from '#shared/types'
+import type { PlayerColor } from '#shared/utils/colors'
 
 export const LINES: Record<string, number[]> = {
   row1: [1, 2, 3, 4, 5], row2: [6, 7, 8, 9, 10], row3: [11, 12, 13, 14, 15], row4: [16, 17, 18, 19, 20], row5: [21, 22, 23, 24, 25],

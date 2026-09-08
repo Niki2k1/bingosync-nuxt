@@ -1,5 +1,5 @@
 import type { Player } from '../db/schema'
-import type { PlayerJson } from '../../shared/types'
+import type { PlayerJson } from '#shared/types'
 
 export function playerToJson(player: Player): PlayerJson {
   return {

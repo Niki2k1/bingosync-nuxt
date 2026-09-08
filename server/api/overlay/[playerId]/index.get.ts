@@ -1,4 +1,4 @@
-import type { OverlayView } from '../../../../shared/types'
+import type { OverlayView } from '#shared/types'
 
 // The overlay runs inside OBS without cookies, so the player's overlay key is the credential.
 export default defineEventHandler(async (event): Promise<OverlayView> => {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HistoryEntry } from '../../shared/types'
+import type { HistoryEntry } from '#shared/types'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FeedEvent, GameInfo, PlayerJson, SquareJson } from '../../../../shared/types'
-import { PLAYER_COLORS, type PlayerColor } from '../../../../shared/utils/colors'
+import type { FeedEvent, GameInfo, PlayerJson, SquareJson } from '#shared/types'
+import { PLAYER_COLORS, type PlayerColor } from '#shared/utils/colors'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 

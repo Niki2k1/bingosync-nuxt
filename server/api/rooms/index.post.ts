@@ -1,4 +1,4 @@
-import { createRoomSchema } from '../../../shared/utils/schemas'
+import { createRoomSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   rateLimit(event, 'create-room', 10, 60_000)

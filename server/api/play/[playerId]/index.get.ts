@@ -1,4 +1,4 @@
-import type { PlayView } from '../../../../shared/types'
+import type { PlayView } from '#shared/types'
 
 export default defineEventHandler(async (event): Promise<PlayView> => {
   const playerId = requireIdParam('playerId', getRouterParam(event, 'playerId'))

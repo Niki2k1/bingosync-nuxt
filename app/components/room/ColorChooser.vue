@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PLAYER_COLORS } from '../../../shared/utils/colors'
+import { PLAYER_COLORS } from '#shared/utils/colors'
 
 const store = useRoomStore()
 const spectator = computed(() => store.player.value.spectator)

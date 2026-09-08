@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { playerColorSchema } from '../../../../../shared/utils/schemas'
+import { playerColorSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

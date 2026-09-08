@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { RoomSettings } from '../../../shared/types'
-import { CUSTOM_GROUP_ID } from '../../../shared/utils/games'
+import type { RoomSettings } from '#shared/types'
+import { CUSTOM_GROUP_ID } from '#shared/utils/games'
 
 const store = useRoomStore()
 const open = store.newCardOpen
