@@ -1,3 +1,8 @@
 allowBuilds:
   esbuild: set this to true or false
   vue-demi: set this to true or false
+
+# pnpm refuses to run install scripts it has not been told about; these are the only ones needed.
+onlyBuiltDependencies:
+  - esbuild
+  - vue-demi
