@@ -5,7 +5,7 @@ import { filterString } from './filter'
 import { hubBroadcast, hubConnectedPlayerIds } from './hub'
 import { newId, newInviteCode } from './ids'
 import { recordAndPublish } from './events'
-import { colorsToMask, maskToColors, type PlayerColor } from '#shared/utils/colors'
+import { PLAYER_COLORS, colorsToMask, maskToColors, type PlayerColor } from '#shared/utils/colors'
 import { getGroup, requireVariant } from '#shared/utils/games'
 import type { Game, Player, Room, Square } from '../db/schema'
 import type { GameInfo, HistoryEntry, RoomListEntry, RoomSettings, SquareJson } from '#shared/types'
@@ -117,12 +117,21 @@ export async function createRoom(input: CreateRoomInput): Promise<{ room: Room, 
   return { room: (await db.query.rooms.findFirst({ where: { id: roomId } }))!, creator }
 }
 
+/** First color nobody in the room plays with yet; once all ten are taken, the least used one. */
+async function nextFreeColor(roomId: string): Promise<PlayerColor> {
+  const used = await useDb().query.players.findMany({ where: { roomId, spectator: false }, columns: { color: true } })
+  const counts = new Map<PlayerColor, number>(PLAYER_COLORS.map(c => [c, 0]))
+  for (const { color } of used) counts.set(color, (counts.get(color) ?? 0) + 1)
+  return [...PLAYER_COLORS].sort((a, b) => counts.get(a)! - counts.get(b)!)[0]!
+}
+
 export async function joinRoom(room: Room, nickname: string, spectator: boolean, twitch?: TwitchIdentity): Promise<Player> {
   const db = useDb()
   const [player] = await db.insert(players).values({
     id: newId(),
     roomId: room.id,
     name: await filterString(nickname),
+    color: await nextFreeColor(room.id),
     spectator,
     overlayKey: newId(),
     twitchId: twitch?.id ?? null,
