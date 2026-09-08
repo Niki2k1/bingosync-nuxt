@@ -19,6 +19,7 @@ useHead({
 })
 
 const state = reactive({ nickname: user.value?.twitch?.displayName ?? '', spectator: false })
+onMounted(() => { if (!state.nickname) state.nickname = loadNickname() })
 const form = useTemplateRef('form')
 const submitting = ref(false)
 const formError = ref<string>()
@@ -29,6 +30,7 @@ async function join() {
   submitting.value = true
   try {
     const { playerId } = await $fetch<{ playerId: string }>(`/api/join/${code.value}`, { method: 'POST', body: { ...state } })
+    saveNickname(state.nickname)
     await navigateTo(`/play/${playerId}`, { replace: true })
   } catch (error) {
     const { message, field } = extractApiError(error)

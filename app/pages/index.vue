@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { RoomListEntry, SiteNoticeJson } from '#shared/types'
-import { CUSTOM_GROUP_ID } from '#shared/utils/games'
+import { BLANK_ID, CUSTOM_GROUP_ID } from '#shared/utils/games'
 
 const { data, refresh } = await useAsyncData('home', async () => {
   const [rooms, notices] = await Promise.all([
@@ -19,16 +19,21 @@ const visibleRooms = computed(() => (showIdle.value ? rooms.value : rooms.value.
 const NOTICE_COLOR = { notice: 'neutral', announcement: 'info', warning: 'warning', error: 'error' } as const
 
 let timer: ReturnType<typeof setInterval> | undefined
-onMounted(() => { timer = setInterval(() => refresh(), 15_000) })
+onMounted(() => {
+  timer = setInterval(() => refresh(), 15_000)
+  suggestedName.value = generateRoomName()
+  if (!state.nickname) state.nickname = loadNickname()
+})
 onUnmounted(() => clearInterval(timer))
 
 const { user } = useUserSession()
 const twitchEnabled = useTwitchEnabled()
+const suggestedName = ref('')
 const state = reactive({
   name: '',
   nickname: user.value?.twitch?.displayName ?? '',
-  group: undefined as number | undefined,
-  variant: undefined as number | undefined,
+  group: BLANK_ID as number | undefined,
+  variant: BLANK_ID as number | undefined,
   customJson: '',
   mode: 'normal' as 'normal' | 'lockout',
   seed: undefined as number | undefined,
@@ -52,7 +57,7 @@ async function makeRoom() {
     const { playerId } = await $fetch<{ playerId: string }>('/api/rooms', {
       method: 'POST',
       body: {
-        name: state.name,
+        name: state.name.trim() || suggestedName.value,
         nickname: state.nickname,
         variant: state.variant,
         customJson: state.group === CUSTOM_GROUP_ID ? state.customJson : '',
@@ -64,6 +69,7 @@ async function makeRoom() {
         twitchOnly: state.twitchOnly
       }
     })
+    saveNickname(state.nickname)
     await navigateTo(`/play/${playerId}`)
   } catch (error) {
     const { message, field } = extractApiError(error)
@@ -144,8 +150,8 @@ async function makeRoom() {
         </template>
         <UForm ref="form" :state="state" class="space-y-4" @submit="makeRoom">
           <UAlert v-if="formError" color="error" variant="subtle" :title="formError" />
-          <UFormField name="name" label="Room name" required>
-            <UInput v-model="state.name" maxlength="255" class="w-full" autocomplete="off" />
+          <UFormField name="name" label="Room name" :hint="state.name ? undefined : 'Leave empty to use the suggestion'">
+            <UInput v-model="state.name" maxlength="255" class="w-full" autocomplete="off" :placeholder="suggestedName" />
           </UFormField>
           <UFormField name="nickname" label="Your nickname" required>
             <UInput v-model="state.nickname" maxlength="50" class="w-full" autocomplete="nickname" />
