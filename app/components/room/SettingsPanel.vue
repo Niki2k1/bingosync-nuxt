@@ -1,19 +1,7 @@
 <script setup lang="ts">
 import { getVariant } from '../../../shared/utils/games'
 
-const props = defineProps<{ overlayUrl?: string }>()
 const store = useRoomStore()
-const toast = useToast()
-
-async function copyOverlay() {
-  if (!props.overlayUrl) return
-  try {
-    await navigator.clipboard.writeText(props.overlayUrl)
-    toast.add({ title: 'OBS overlay link copied', icon: 'i-lucide-check', color: 'success', duration: 2000 })
-  } catch {
-    window.prompt('Copy the OBS overlay link:', props.overlayUrl)
-  }
-}
 const usesSeed = computed(() => getVariant(store.settings.value.game.variant)?.usesSeed ?? true)
 const seedText = computed(() => {
   if (store.coverVisible.value || store.settings.value.seed === null) return null
@@ -43,9 +31,6 @@ const seedText = computed(() => {
         <dd>{{ store.settings.value.lockout ? 'Lockout' : 'Non-lockout' }}</dd>
       </div>
     </dl>
-    <div class="mt-4 space-y-2">
-      <UButton label="New card" icon="i-lucide-refresh-cw" color="neutral" variant="subtle" block @click="store.newCardOpen.value = true" />
-      <UButton v-if="overlayUrl" label="Copy OBS overlay link" icon="i-lucide-monitor" color="neutral" variant="ghost" block @click="copyOverlay" />
-    </div>
+    <UButton label="New card" icon="i-lucide-refresh-cw" color="neutral" variant="subtle" block class="mt-4" @click="store.newCardOpen.value = true" />
   </UCard>
 </template>

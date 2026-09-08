@@ -9,7 +9,6 @@ const inviteCode = ref(props.view.inviteCode)
 const listed = ref(props.view.listed)
 const origin = computed(() => (import.meta.client ? location.origin : ''))
 const inviteUrl = computed(() => `${origin.value}/join/${inviteCode.value}`)
-const overlayUrl = computed(() => `${origin.value}/overlay/${props.view.player.id}?key=${props.view.overlayKey}`)
 
 async function copy(text: string, what: string) {
   try {
@@ -54,15 +53,6 @@ async function toggleListed(value: boolean) {
           <div class="flex items-center justify-between mt-2">
             <USwitch :model-value="listed" label="Show in the public room list" size="sm" @update:model-value="toggleListed" />
             <UButton label="New link" icon="i-lucide-refresh-cw" color="neutral" variant="ghost" size="xs" :loading="rotating" @click="rotate" />
-          </div>
-        </div>
-        <USeparator />
-        <div>
-          <p class="text-sm font-medium">OBS browser source</p>
-          <p class="text-xs text-muted mb-2">Transparent board with the score row. Add <code>&amp;players=0</code> to hide the scores or <code>&amp;scale=1.5</code> to enlarge.</p>
-          <div class="flex gap-2">
-            <UInput :model-value="overlayUrl" readonly class="flex-1 font-mono text-xs" :ui="{ base: 'blur-[3px] focus:blur-none hover:blur-none transition' }" />
-            <UButton label="Copy" icon="i-lucide-copy" @click="copy(overlayUrl, 'Overlay link')" />
           </div>
         </div>
       </div>

@@ -15,9 +15,6 @@ onMounted(async () => {
 })
 onBeforeUnmount(() => store.disconnect())
 
-const overlayUrl = ref<string>()
-onMounted(() => { overlayUrl.value = `${location.origin}/overlay/${props.view.player.id}?key=${props.view.overlayKey}` })
-
 async function leave() {
   await $fetch(`/api/rooms/${store.id}/leave`, { method: 'POST' })
   store.disconnect()
@@ -38,6 +35,7 @@ async function leave() {
           </div>
         </div>
         <div class="ml-auto flex items-center gap-2">
+          <RoomOverlayPopover :view="view" />
           <RoomSharePopover :view="view" />
           <div class="hidden sm:flex items-center gap-2 text-sm text-muted pl-2">
             <span class="size-2.5 rounded-full" :class="store.player.value.spectator ? 'bg-accented' : `${store.chosenColor.value}square`" />
@@ -73,7 +71,7 @@ async function leave() {
           <RoomChatPanel class="flex-1 min-h-[22rem]" />
           <div class="grid gap-4 sm:grid-cols-2 shrink-0">
             <RoomPlayersPanel class="min-h-44 max-h-64" />
-            <RoomSettingsPanel :overlay-url="overlayUrl" />
+            <RoomSettingsPanel />
           </div>
         </section>
       </div>
