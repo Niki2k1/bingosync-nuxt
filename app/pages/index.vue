@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { RoomListEntry, SiteNoticeJson } from '#shared/types'
 import { BLANK_ID, CUSTOM_GROUP_ID } from '#shared/utils/games'
+import { getVariant } from '#shared/utils/games'
 
 const { data, refresh } = await useAsyncData('home', async () => {
   const [rooms, notices] = await Promise.all([
@@ -42,6 +43,7 @@ const state = reactive({
   listed: true,
   twitchOnly: false
 })
+const usesSeed = computed(() => (state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)))
 const form = useTemplateRef('form')
 const submitting = ref(false)
 const formError = ref<string>()
@@ -161,7 +163,7 @@ async function makeRoom() {
             <UFormField name="lockout" label="Mode">
               <USelect v-model="state.mode" :items="[{ label: 'Non-lockout', value: 'normal' }, { label: 'Lockout', value: 'lockout' }]" value-key="value" class="w-full" />
             </UFormField>
-            <UFormField name="seed" label="Seed" hint="Optional">
+            <UFormField v-if="usesSeed" name="seed" label="Seed" hint="Optional">
               <UInputNumber v-model="state.seed" :min="0" :max="2147483647" placeholder="Random" class="w-full" :format-options="{ useGrouping: false }" />
             </UFormField>
           </div>
