@@ -1,3 +1,4 @@
+import type { GameInfo } from '../types'
 import { GAME_GROUPS, GAME_VARIANTS, type GameGroup, type GameVariant } from './games.generated'
 
 // A board with 25 empty squares that players fill in from inside the room. Not part of the
@@ -56,4 +57,17 @@ export const GAME_CHOICES: GameGroup[] = [
 
 export function isCustomVariant(id: number): boolean {
   return variantsById.get(id)?.custom ?? false
+}
+
+export function gameInfo(variantId: number): GameInfo {
+  const variant = requireVariant(variantId)
+  const group = getGroup(variant.group)
+  return {
+    variant: variant.id,
+    group: variant.group,
+    name: variant.name,
+    groupName: group?.name ?? variant.name,
+    variantName: variant.variantName,
+    shortName: variant.shortName
+  }
 }

@@ -1,12 +1,8 @@
 <script setup lang="ts">
-const { user, fetch: refreshSession } = useUserSession()
-const twitchEnabled = useTwitchEnabled()
+const { user } = useAccount()
 const route = useRoute()
-
-async function signOut() {
-  await $fetch('/api/auth/logout', { method: 'POST' })
-  await refreshSession()
-}
+const loginUrl = computed(() => wervtLoginUrl(route.fullPath))
+const logoutUrl = computed(() => wervtLogoutUrl(route.fullPath))
 
 const items = [
   { label: 'Rooms', to: '/' },
@@ -23,12 +19,11 @@ const items = [
       </template>
       <UNavigationMenu :items="items" />
       <template #right>
-        <template v-if="twitchEnabled">
-          <UDropdownMenu v-if="user?.twitch" :items="[[{ label: 'Sign out', icon: 'i-lucide-log-out', onSelect: signOut }]]">
-            <UButton color="neutral" variant="ghost" size="sm" :label="user.twitch.displayName" :avatar="{ src: user.twitch.avatar, alt: user.twitch.displayName }" />
-          </UDropdownMenu>
-          <UButton v-else label="Sign in with Twitch" icon="i-lucide-twitch" color="neutral" variant="subtle" size="sm" :to="`/api/auth/twitch-start?returnTo=${encodeURIComponent(route.fullPath)}`" external />
-        </template>
+        <!-- Signing in is optional; it prefills your nickname and opens Twitch-only rooms. -->
+        <UDropdownMenu v-if="user" :items="[[{ label: 'Sign out', icon: 'i-lucide-log-out', to: logoutUrl, external: true }]]">
+          <UButton color="neutral" variant="ghost" size="sm" :label="user.name" :avatar="user.image ? { src: user.image, alt: user.name } : { icon: 'i-lucide-user' }" />
+        </UDropdownMenu>
+        <UButton v-else label="Sign in" icon="i-lucide-log-in" color="neutral" variant="subtle" size="sm" :to="loginUrl" external />
         <UButton icon="i-lucide-github" color="neutral" variant="ghost" to="https://github.com/kbuzsaki/bingosync" target="_blank" aria-label="GitHub" />
       </template>
       <template #body>

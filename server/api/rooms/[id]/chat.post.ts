@@ -1,3 +1,4 @@
+import { defineEventHandler, getRouterParam } from 'nuxt/server'
 import { chatSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {

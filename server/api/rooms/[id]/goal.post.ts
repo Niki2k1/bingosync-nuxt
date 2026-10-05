@@ -1,3 +1,4 @@
+import { defineEventHandler, createError, getRouterParam } from 'nuxt/server'
 import { editGoalSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {

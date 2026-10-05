@@ -11,27 +11,23 @@ const scale = computed(() => Number.parseFloat(String(route.query.scale ?? '1'))
 
 const url = computed(() => `/api/overlay/${playerId.value}?key=${encodeURIComponent(key.value)}`)
 const { data: view, error } = await useFetch<OverlayView>(url, { key: `overlay-${playerId.value}` })
-if (error.value) throw createError({ statusCode: 404, statusMessage: 'Overlay not found', fatal: true })
+if (error.value || !view.value) throw createError({ statusCode: 404, statusMessage: 'Overlay not found', fatal: true })
+const shapes = await useRoomShapes(view.value.roomId, { playerId: playerId.value, key: key.value })
 
 useHead({ title: 'Bingosync overlay', bodyAttrs: { class: 'overlay-body' } })
 
 const store = createRoomStore({
-  roomId: view.value!.roomId,
-  name: view.value!.name,
-  player: view.value!.player,
-  players: view.value!.players,
-  settings: view.value!.settings,
-  socketToken: view.value!.socketToken,
-  readonly: true,
-  refreshToken: async () => (await $fetch<OverlayView>(url.value)).socketToken
+  roomId: view.value.roomId,
+  name: view.value.name,
+  player: view.value.player,
+  settings: view.value.settings,
+  shapes,
+  readonly: true
 })
-store.squares.value = view.value!.board
 // Overlays always show the card; hiding is a per-player choice in the room.
 store.revealed.value = true
 provideRoomStore(store)
 
-onMounted(() => store.connect())
-onBeforeUnmount(() => store.disconnect())
 </script>
 
 <template>

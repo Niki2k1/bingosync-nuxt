@@ -3,8 +3,8 @@ import type { InviteView } from '#shared/types'
 
 const route = useRoute()
 const code = computed(() => String(route.params.code))
-const { user } = useUserSession()
-const twitchEnabled = useTwitchEnabled()
+const { user } = useAccount()
+const twitchLoginUrl = computed(() => wervtLoginUrl(`/join/${code.value}`))
 
 const { data: invite, error } = await useFetch<InviteView>(() => `/api/join/${code.value}`, { key: `invite-${code.value}` })
 if (error.value) {
@@ -62,8 +62,8 @@ async function join() {
         variant="subtle"
         icon="i-lucide-twitch"
         title="This room is for Twitch users only"
-        :description="twitchEnabled ? 'Sign in with Twitch to join.' : 'Twitch sign-in is not configured on this server.'"
-        :actions="twitchEnabled ? [{ label: 'Sign in with Twitch', to: `/api/auth/twitch-start?returnTo=/join/${code}`, external: true, icon: 'i-lucide-twitch' }] : []"
+        :description="user ? 'Sign in with Twitch (it links to your account) to join.' : 'Sign in with Twitch to join.'"
+        :actions="[{ label: 'Sign in with Twitch', to: twitchLoginUrl, external: true, icon: 'i-lucide-twitch' }]"
       />
       <UForm v-else ref="form" :state="state" class="space-y-4" @submit="join">
         <UAlert v-if="formError" color="error" variant="subtle" :title="formError" />

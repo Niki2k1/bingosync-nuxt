@@ -48,12 +48,71 @@ export type FeedEvent = EventBase & (
 
 export type FeedEventType = FeedEvent['type']
 
-export type SocketMessage =
-  | { type: 'event', event: FeedEvent }
-  | { type: 'board', squares: SquareJson[] }
-  | { type: 'ping' }
-  | { type: 'error', error: string }
-  | { type: 'joined', roomId: string }
+/** What an event row stores; the feed renders it as a FeedEvent. */
+export type EventPayload =
+  | { type: 'chat', text: string }
+  | { type: 'goal', slot: number, goal: string, colors: PlayerColor[], color: PlayerColor, remove: boolean }
+  | { type: 'color', color: PlayerColor, moved?: number }
+  | { type: 'revealed' }
+  | { type: 'connection', status: 'connected' | 'disconnected' }
+  // `seed` is left out while the card is hidden: events are streamed to every player as they are.
+  | { type: 'new-card', variant: number, seed?: number, hideCard: boolean }
+  | { type: 'edit', slot: number, name: string }
+
+// Rows as the room page receives them from the Electric shapes (server/api/rooms/[id]/shapes).
+// Timestamps arrive as Postgres text.
+export interface RoomRow {
+  id: string
+  name: string
+  inviteCode?: string
+  listed: boolean
+  twitchOnly: boolean
+  hideCard: boolean
+  currentGameId: number | null
+  [key: string]: unknown
+}
+
+export interface GameRow {
+  id: number
+  roomId: string
+  variant: number
+  lockout: boolean
+  createdAt: string
+  revealedAt: string | null
+  [key: string]: unknown
+}
+
+export interface SquareRow {
+  id: number
+  roomId: string
+  gameId: number
+  slot: number
+  goal: string
+  colorMask: number
+  [key: string]: unknown
+}
+
+export interface PlayerRow {
+  id: string
+  roomId: string
+  name: string
+  color: PlayerColor
+  spectator: boolean
+  online: boolean
+  createdAt: string
+  [key: string]: unknown
+}
+
+export interface EventShapeRow {
+  id: number
+  roomId: string
+  playerId: string
+  type: EventPayload['type']
+  playerColor: SquareColor
+  createdAt: string
+  payload: EventPayload
+  [key: string]: unknown
+}
 
 export interface RoomListEntry {
   inviteCode: string
@@ -100,9 +159,7 @@ export interface PlayView {
   listed: boolean
   twitchOnly: boolean
   player: PlayerJson
-  players: PlayerJson[]
   settings: RoomSettings
-  socketToken: string
   overlayKey: string
 }
 
@@ -111,10 +168,7 @@ export interface OverlayView {
   roomId: string
   name: string
   player: PlayerJson
-  players: PlayerJson[]
   settings: RoomSettings
-  board: SquareJson[]
-  socketToken: string
 }
 
 export interface TwitchProfile {

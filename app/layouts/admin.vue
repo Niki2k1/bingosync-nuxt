@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const { fetch: refreshSession } = useUserSession()
-
 const items: NavigationMenuItem[] = [
   { label: 'Overview', icon: 'i-lucide-gauge', to: '/admin', exact: true },
   { label: 'Rooms', icon: 'i-lucide-layout-grid', to: '/admin/rooms' },
@@ -12,9 +10,7 @@ const items: NavigationMenuItem[] = [
 ]
 
 async function signOut() {
-  await $fetch('/api/admin/logout', { method: 'POST' })
-  await refreshSession()
-  await navigateTo('/admin/login')
+  await navigateTo(wervtLogoutUrl('/'), { external: true })
 }
 </script>
 

@@ -1,14 +1,13 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { readFile } from 'node:fs/promises'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { GAME_VARIANTS } from '../../shared/utils/games.generated'
 
 const ROOT = resolve(__dirname, '../..')
 const GOLDEN = resolve(ROOT, 'tests/golden')
 const SEEDS = [1, 1000, 1234, 12345]
 
-// The generator module reads runtime config through Nitro's auto-import; stub it for plain vitest.
-;(globalThis as Record<string, unknown>).useRuntimeConfig = () => ({ generatorsDir: resolve(ROOT, 'generators'), generatorTimeoutMs: 10_000 })
 
 let generateCard: typeof import('../../server/utils/generator')['generateCard']
 let validateCustomBoard: typeof import('../../server/utils/generator')['validateCustomBoard']
@@ -16,6 +15,8 @@ let GeneratorError: typeof import('../../server/utils/generator')['GeneratorErro
 
 beforeAll(async () => {
   const mod = await import('../../server/utils/generator')
+  // On the server the sources come from Nitro server assets; here straight from disk.
+  mod.setSourceLoader(path => readFile(resolve(ROOT, 'generators', path), 'utf8').catch(() => undefined))
   generateCard = mod.generateCard
   validateCustomBoard = mod.validateCustomBoard
   GeneratorError = mod.GeneratorError
@@ -35,27 +36,35 @@ describe('golden generator output', () => {
     for (const seed of SEEDS) {
       const file = resolve(GOLDEN, variant.key, `${seed}.json`)
       if (!existsSync(file)) continue
-      it(`${variant.key} seed ${seed}`, () => {
+      it(`${variant.key} seed ${seed}`, async () => {
         const expected = JSON.parse(readFileSync(file, 'utf8')) as { name: string }[]
-        expect(generateCard(variant.id, seed)).toEqual(expected)
+        expect(await generateCard(variant.id, seed)).toEqual(expected)
       })
     }
   }
 })
 
-describe('generator safety', () => {
-  it('times out runaway scripts', () => {
-    vi.stubGlobal('useRuntimeConfig', () => ({ generatorsDir: resolve(ROOT, 'tests/fixtures'), generatorTimeoutMs: 200 }))
-    expect(() => generateCard(1, 1)).toThrow(GeneratorError)
-    vi.unstubAllGlobals()
+describe('generator sandbox', () => {
+  it('keeps generator globals and the seeded Math.random off the real globals', async () => {
+    await generateCard(GAME_VARIANTS.find(v => v.key === 'celeste')!.id, 1234)
+    expect('bingoGenerator' in globalThis).toBe(false)
+    expect('bingoList' in globalThis).toBe(false)
+    expect(Math.random.toString()).toContain('[native code]')
+  })
+
+  it('reports a missing generator as a GeneratorError', async () => {
+    const mod = await import('../../server/utils/generator')
+    mod.setSourceLoader(async () => undefined)
+    await expect(generateCard(GAME_VARIANTS.find(v => v.key === 'celeste')!.id, 1)).rejects.toThrow(GeneratorError)
+    mod.setSourceLoader(path => readFile(resolve(ROOT, 'generators', path), 'utf8').catch(() => undefined))
   })
 })
 
 describe('custom boards', () => {
-  it('accepts a fixed 25 goal board', () => {
+  it('accepts a fixed 25 goal board', async () => {
     const board = Array.from({ length: 25 }, (_, i) => ({ name: `goal ${i}` }))
     expect(validateCustomBoard(18, JSON.stringify(board))).toHaveLength(25)
-    expect(generateCard(18, 0, board).map(s => s.name)).toEqual(board.map(g => g.name))
+    expect((await generateCard(18, 0, board)).map(s => s.name)).toEqual(board.map(g => g.name))
   })
 
   it('rejects malformed boards', () => {
@@ -64,10 +73,10 @@ describe('custom boards', () => {
     expect(() => validateCustomBoard(172, JSON.stringify([{ name: 'a' }]))).toThrow(/at least 25/)
   })
 
-  it('randomizes a custom list deterministically', () => {
+  it('randomizes a custom list deterministically', async () => {
     const board = Array.from({ length: 40 }, (_, i) => ({ name: `goal ${i}` }))
-    const a = generateCard(172, 42, validateCustomBoard(172, JSON.stringify(board)))
-    const b = generateCard(172, 42, validateCustomBoard(172, JSON.stringify(board)))
+    const a = await generateCard(172, 42, validateCustomBoard(172, JSON.stringify(board)))
+    const b = await generateCard(172, 42, validateCustomBoard(172, JSON.stringify(board)))
     expect(a).toEqual(b)
     expect(new Set(a.map(s => s.name)).size).toBe(25)
   })

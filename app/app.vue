@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const twitchEnabled = useTwitchEnabled()
-const { data } = await useFetch<{ twitchEnabled: boolean }>('/api/auth/config', { key: 'auth-config' })
-twitchEnabled.value = data.value?.twitchEnabled ?? false
+const { admin } = useAccount()
+const { data } = await useFetch<{ admin: boolean }>('/api/me', { key: 'me' })
+admin.value = data.value?.admin ?? false
 </script>
 
 <template>

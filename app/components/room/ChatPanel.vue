@@ -52,12 +52,6 @@ async function send() {
     <div ref="body" class="flex-1 min-h-0 overflow-y-auto feed-scroll px-4 py-3 text-sm space-y-0.5">
       <p v-if="!store.feedLoaded.value" class="text-muted italic">Loading the feed…</p>
       <template v-else>
-        <button
-          v-if="!store.allIncluded.value"
-          type="button"
-          class="w-full text-xs text-muted underline underline-offset-2 hover:text-default py-1"
-          @click="store.loadFeed(true)"
-        >Only the last 24 hours are shown. Load the full history</button>
         <RoomChatEntry v-for="event in store.events.value" :key="event.id" :event="event" />
       </template>
     </div>

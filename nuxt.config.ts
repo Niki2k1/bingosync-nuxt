@@ -1,10 +1,16 @@
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
 
   devServer: { port: 4979 },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils'],
+  // @wervt/nuxt is linked from ../wervt until it's on npm: use this app's drizzle-orm
+  // everywhere, so schema types and runtime match.
+  alias: { 'drizzle-orm': fileURLToPath(new URL('./node_modules/drizzle-orm', import.meta.url)) },
+
+  modules: ['@wervt/nuxt', '@nuxt/ui'],
 
   css: ['~/assets/css/main.css'],
 
@@ -23,17 +29,13 @@ export default defineNuxtConfig({
   colorMode: { preference: 'dark', fallback: 'dark', storageKey: 'bingosync-color-mode' },
 
   runtimeConfig: {
-    databasePath: '.data/bingosync.db',
-    migrationsDir: 'server/db/migrations',
-    generatorsDir: 'generators',
-    adminPassword: '',
-    generatorTimeoutMs: 10000,
-    session: { maxAge: 60 * 60 * 24 * 365 },
-    oauth: { twitch: { clientId: '', clientSecret: '' } }
+    // Comma-separated wervt emails that may open /admin (NUXT_ADMIN_EMAILS).
+    adminEmails: ''
   },
 
   nitro: {
-    experimental: { websocket: true },
-    imports: { dirs: ['server/utils'] }
+    imports: { dirs: ['server/utils'] },
+    // The community generators are bundled with the server and loaded on demand.
+    serverAssets: [{ baseName: 'generators', dir: '../generators' }]
   }
 })

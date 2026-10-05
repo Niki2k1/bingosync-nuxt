@@ -1,4 +1,4 @@
-import type { H3Event } from 'h3'
+import { createError, getRequestIP, type RequestEvent } from 'nuxt/server'
 
 interface Bucket {
   hits: number[]
@@ -7,7 +7,7 @@ interface Bucket {
 const buckets = new Map<string, Bucket>()
 
 // Cheap in-memory sliding window; Cloudflare in front handles anything serious.
-export function rateLimit(event: H3Event, scope: string, limit: number, windowMs: number) {
+export function rateLimit(event: RequestEvent, scope: string, limit: number, windowMs: number) {
   const ip = getRequestIP(event, { xForwardedFor: true }) ?? 'unknown'
   const key = `${scope}:${ip}`
   const now = Date.now()

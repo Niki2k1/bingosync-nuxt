@@ -1,31 +1,20 @@
+import { createError } from 'nuxt/server'
 import { and, asc, desc, eq, gt, count, inArray } from 'drizzle-orm'
 import { schema, useDb } from './db'
 import { generateCard, randomSeed } from './generator'
 import { filterString } from './filter'
-import { hubBroadcast, hubConnectedPlayerIds } from './hub'
+import { sweepPresence } from './presence'
 import { newId, newInviteCode } from './ids'
 import { recordAndPublish } from './events'
+import type { TwitchIdentity } from './session'
 import { PLAYER_COLORS, colorsToMask, maskToColors, type PlayerColor } from '#shared/utils/colors'
-import { getGroup, requireVariant } from '#shared/utils/games'
+import { gameInfo, requireVariant } from '#shared/utils/games'
 import type { Game, Player, Room, Square } from '../db/schema'
-import type { GameInfo, HistoryEntry, RoomListEntry, RoomSettings, SquareJson } from '#shared/types'
+import type { HistoryEntry, RoomListEntry, RoomSettings, SquareJson } from '#shared/types'
 
 const { rooms, games, squares, players } = schema
 
 const STALE_THRESHOLD_MS = 90 * 60 * 1000
-
-export function gameInfo(variantId: number): GameInfo {
-  const variant = requireVariant(variantId)
-  const group = getGroup(variant.group)
-  return {
-    variant: variant.id,
-    group: variant.group,
-    name: variant.name,
-    groupName: group?.name ?? variant.name,
-    variantName: variant.variantName,
-    shortName: variant.shortName
-  }
-}
 
 export function squareToJson(square: Square): SquareJson {
   return { slot: square.slot, name: square.goal, colors: maskToColors(square.colorMask) }
@@ -38,11 +27,6 @@ export async function currentGame(room: Room): Promise<Game> {
     : await db.query.games.findFirst({ where: { roomId: room.id }, orderBy: { createdAt: 'desc', id: 'desc' } })
   if (!game) throw createError({ statusCode: 500, statusMessage: 'Room has no game' })
   return game
-}
-
-export async function loadBoard(game: Game): Promise<SquareJson[]> {
-  const rows = await useDb().query.squares.findMany({ where: { gameId: game.id }, orderBy: { slot: 'asc' } })
-  return rows.map(squareToJson)
 }
 
 export function isSeedHidden(room: Room, game: Game): boolean {
@@ -69,19 +53,14 @@ interface NewGameInput {
 async function insertGame(roomId: string, input: NewGameInput): Promise<Game> {
   const variant = requireVariant(input.variant)
   const seed = input.seed ?? (variant.usesSeed ? randomSeed() : 0)
-  const card = generateCard(input.variant, seed, input.customBoard)
+  const card = await generateCard(input.variant, seed, input.customBoard)
   const db = useDb()
-  return db.transaction((tx) => {
-    const game = tx.insert(games).values({ roomId, seed, variant: input.variant, lockout: input.lockout }).returning().get()
-    tx.insert(squares).values(card.map((square, i) => ({ gameId: game.id, slot: i + 1, goal: square.name }))).run()
-    tx.update(rooms).set({ currentGameId: game.id }).where(eq(rooms.id, roomId)).run()
-    return game
+  return db.transaction(async (tx) => {
+    const [game] = await tx.insert(games).values({ roomId, seed, variant: input.variant, lockout: input.lockout }).returning()
+    await tx.insert(squares).values(card.map((square, i) => ({ roomId, gameId: game!.id, slot: i + 1, goal: square.name })))
+    await tx.update(rooms).set({ currentGameId: game!.id }).where(eq(rooms.id, roomId))
+    return game!
   })
-}
-
-export interface TwitchIdentity {
-  id: string
-  login: string
 }
 
 export interface CreateRoomInput extends NewGameInput {
@@ -151,7 +130,12 @@ export async function newCard(room: Room, player: Player, input: NewGameInput & 
   const db = useDb()
   const game = await insertGame(room.id, input)
   await db.update(rooms).set({ hideCard: input.hideCard }).where(eq(rooms.id, room.id))
-  await recordAndPublish(room, player, { type: 'new-card', variant: input.variant, seed: game.seed, hideCard: input.hideCard })
+  await recordAndPublish(room, player, {
+    type: 'new-card',
+    variant: input.variant,
+    ...(input.hideCard ? {} : { seed: game.seed }),
+    hideCard: input.hideCard
+  })
   return game
 }
 
@@ -188,7 +172,7 @@ export async function selectGoal(room: Room, player: Player, slot: number, color
  * Switches the player's color and carries their own marks along: a square moves when the most
  * recent mark in the old color on it was made by this player. Teammates' marks stay.
  */
-/** Renames a square's goal text (blank boards, typos) and pushes the new board to everyone. */
+/** Renames a square's goal text (blank boards, typos). */
 export async function editGoal(room: Room, player: Player, slot: number, name: string) {
   const db = useDb()
   const game = await currentGame(room)
@@ -196,7 +180,6 @@ export async function editGoal(room: Room, player: Player, slot: number, name: s
   if (!square) throw createError({ statusCode: 400, statusMessage: 'Invalid slot' })
   await db.update(squares).set({ goal: name }).where(eq(squares.id, square.id))
   await recordAndPublish(room, player, { type: 'edit', slot, name })
-  hubBroadcast(room.id, { type: 'board', squares: await loadBoard(game) })
 }
 
 export async function changeColor(room: Room, player: Player, color: PlayerColor) {
@@ -230,7 +213,6 @@ export async function changeColor(room: Room, player: Player, color: PlayerColor
   }
 
   await recordAndPublish(room, { ...player, color }, { type: 'color', color, moved })
-  if (moved > 0) hubBroadcast(room.id, { type: 'board', squares: await loadBoard(await currentGame(room)) })
 }
 
 export async function revealBoard(room: Room, player: Player): Promise<Game> {
@@ -241,12 +223,20 @@ export async function revealBoard(room: Room, player: Player): Promise<Game> {
   return { ...game, revealedAt: game.revealedAt ?? new Date() }
 }
 
-/** Recomputes the cached active flag and player count from live sockets and stored players. */
+/** Recomputes the cached player count of a room. */
 export async function refreshRoomCounters(roomId: string) {
   const db = useDb()
   const [{ total = 0 } = {}] = await db.select({ total: count() }).from(players).where(eq(players.roomId, roomId))
-  const active = hubConnectedPlayerIds(roomId).length > 0
-  await db.update(rooms).set({ active, playerCount: total }).where(eq(rooms.id, roomId))
+  await db.update(rooms).set({ playerCount: total }).where(eq(rooms.id, roomId))
+}
+
+/** Online players per room, for the given rooms. */
+export async function onlineCounts(roomIds: string[]): Promise<Map<string, number>> {
+  if (roomIds.length === 0) return new Map()
+  const rows = await useDb().select({ roomId: players.roomId, n: count() }).from(players)
+    .where(and(inArray(players.roomId, roomIds), eq(players.online, true)))
+    .groupBy(players.roomId)
+  return new Map(rows.map(r => [r.roomId, r.n]))
 }
 
 async function creatorsForRooms(roomIds: string[]): Promise<Map<string, string>> {
@@ -267,8 +257,14 @@ async function gamesForRooms(roomList: Room[]): Promise<Map<string, Game>> {
 
 export async function listActiveRooms(): Promise<RoomListEntry[]> {
   const db = useDb()
-  const active = await db.query.rooms.findMany({ where: { active: true, listed: true } })
-  const [creators, current] = await Promise.all([creatorsForRooms(active.map(r => r.id)), gamesForRooms(active)])
+  await sweepPresence()
+  const activeIds = db.selectDistinct({ id: players.roomId }).from(players).where(eq(players.online, true))
+  const active = await db.select().from(rooms).where(and(eq(rooms.listed, true), inArray(rooms.id, activeIds)))
+  const [creators, current, online] = await Promise.all([
+    creatorsForRooms(active.map(r => r.id)),
+    gamesForRooms(active),
+    onlineCounts(active.map(r => r.id))
+  ])
   const now = Date.now()
   const entries = active.map<RoomListEntry>((room) => {
     const game = current.get(room.id)
@@ -277,7 +273,7 @@ export async function listActiveRooms(): Promise<RoomListEntry[]> {
       name: room.name,
       creator: creators.get(room.id) ?? '',
       game: gameInfo(game?.variant ?? 18),
-      connectedPlayers: hubConnectedPlayerIds(room.id).length,
+      connectedPlayers: online.get(room.id) ?? 0,
       idle: now - room.lastEventAt.getTime() > STALE_THRESHOLD_MS
     }
   })

@@ -12,7 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "games:sync": "python3 scripts/sync-games.py",
     "test": "vitest run",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "deploy": "nuxt build && wervt deploy"
   },
   "devEngines": {
     "packageManager": {
@@ -23,13 +24,13 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.11.1",
+    "@wervt/nuxt": "file:../wervt/packages/nuxt",
     "drizzle-orm": "1.0.0-rc.4",
-    "nuxt": "^4.5.2",
-    "nuxt-auth-utils": "^0.5.30",
+    "nuxt": "^4.6.0",
     "tailwindcss": "^4.3.3",
-    "vue": "^3.5.42",
-    "vue-router": "^5.3.1",
-    "zod": "^4.5.4"
+    "valibot": "^1.5.0",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.130",

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as v from 'valibot'
 import { PLAYER_COLORS } from './colors'
 import { getVariant } from './games'
 
@@ -6,51 +6,62 @@ export const ROOM_NAME_MAX = 255
 export const PLAYER_NAME_MAX = 50
 export const SEED_MAX = 2147483647
 
-const variantId = z.number().int().refine(id => !!getVariant(id), 'Unknown game')
+const variantId = v.pipe(v.number(), v.integer(), v.check(id => !!getVariant(id), 'Unknown game'))
 
-const seedField = z.union([z.literal(''), z.null(), z.undefined(), z.coerce.number().int().min(0).max(SEED_MAX)])
-  .transform(v => (v === '' || v === null || v === undefined ? undefined : v))
+// Blank means "pick one": the form sends '', null or nothing; numbers may come as strings.
+const seedField = v.pipe(
+  v.optional(v.nullable(v.union([v.literal(''), v.number(), v.string()]))),
+  v.transform(value => (value === '' || value === null || value === undefined ? undefined : Number(value))),
+  v.optional(v.pipe(v.number(), v.integer('Seed must be a whole number'), v.minValue(0), v.maxValue(SEED_MAX)))
+)
 
-export const newCardSchema = z.object({
+const nickname = v.pipe(v.string(), v.trim(), v.nonEmpty('Nickname is required'), v.maxLength(PLAYER_NAME_MAX))
+
+const newCardEntries = {
   variant: variantId,
-  lockout: z.boolean().default(false),
-  hideCard: z.boolean().default(false),
+  lockout: v.optional(v.boolean(), false),
+  hideCard: v.optional(v.boolean(), false),
   seed: seedField,
-  customJson: z.string().default('')
+  customJson: v.optional(v.string(), '')
+}
+
+export const newCardSchema = v.object(newCardEntries)
+
+export const createRoomSchema = v.object({
+  ...newCardEntries,
+  name: v.pipe(v.string(), v.trim(), v.nonEmpty('Room name is required'), v.maxLength(ROOM_NAME_MAX)),
+  nickname,
+  spectator: v.optional(v.boolean(), false),
+  listed: v.optional(v.boolean(), true),
+  twitchOnly: v.optional(v.boolean(), false)
 })
 
-export const createRoomSchema = newCardSchema.extend({
-  name: z.string().trim().min(1, 'Room name is required').max(ROOM_NAME_MAX),
-  nickname: z.string().trim().min(1, 'Nickname is required').max(PLAYER_NAME_MAX),
-  spectator: z.boolean().default(false),
-  listed: z.boolean().default(true),
-  twitchOnly: z.boolean().default(false)
+export const joinRoomSchema = v.object({
+  nickname,
+  spectator: v.optional(v.boolean(), false)
 })
 
-export const joinRoomSchema = z.object({
-  nickname: z.string().trim().min(1, 'Nickname is required').max(PLAYER_NAME_MAX),
-  spectator: z.boolean().default(false)
-})
+export const playerColorSchema = v.picklist(PLAYER_COLORS)
 
-export const playerColorSchema = z.enum(PLAYER_COLORS)
+const slot = v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(25))
 
-export const selectGoalSchema = z.object({
-  slot: z.number().int().min(1).max(25),
+export const selectGoalSchema = v.object({
+  slot,
   color: playerColorSchema,
-  remove: z.boolean()
+  remove: v.boolean()
 })
 
-export const chatSchema = z.object({
-  text: z.string().min(1).max(4000)
+export const chatSchema = v.object({
+  text: v.pipe(v.string(), v.minLength(1), v.maxLength(4000))
 })
 
-export const colorSchema = z.object({ color: playerColorSchema })
+export const colorSchema = v.object({ color: playerColorSchema })
 
-export const editGoalSchema = z.object({
-  slot: z.number().int().min(1).max(25),
-  name: z.string().trim().max(255)
+export const editGoalSchema = v.object({
+  slot,
+  name: v.pipe(v.string(), v.trim(), v.maxLength(255))
 })
 
-export type CreateRoomForm = z.input<typeof createRoomSchema>
-export type NewCardInput = z.input<typeof newCardSchema>
-export type JoinRoomInput = z.input<typeof joinRoomSchema>
+export type CreateRoomForm = v.InferInput<typeof createRoomSchema>
+export type NewCardInput = v.InferInput<typeof newCardSchema>
+export type JoinRoomInput = v.InferInput<typeof joinRoomSchema>

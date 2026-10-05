@@ -1,3 +1,4 @@
+import { defineEventHandler, getRouterParam } from 'nuxt/server'
 import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {

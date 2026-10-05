@@ -1,16 +1,16 @@
+import { defineEventHandler, getRouterParam } from 'nuxt/server'
 import { eq } from 'drizzle-orm'
-import { z } from 'zod'
+import * as v from 'valibot'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
   const id = requireIdParam('id', getRouterParam(event, 'id'))
   await requireRoom(id)
-  const input = await readValidated(event, z.object({
-    name: z.string().trim().min(1).max(255).optional(),
-    hideCard: z.boolean().optional(),
-    listed: z.boolean().optional(),
-    twitchOnly: z.boolean().optional(),
-    active: z.boolean().optional()
+  const input = await readValidated(event, v.object({
+    name: v.optional(v.pipe(v.string(), v.trim(), v.nonEmpty(), v.maxLength(255))),
+    hideCard: v.optional(v.boolean()),
+    listed: v.optional(v.boolean()),
+    twitchOnly: v.optional(v.boolean())
   }))
   await useDb().update(schema.rooms).set(input).where(eq(schema.rooms.id, id))
   return { ok: true }

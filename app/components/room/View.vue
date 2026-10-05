@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import type { PlayView } from '#shared/types'
+import type { RoomShapes } from '~/composables/useRoomStore'
 
-const props = defineProps<{ view: PlayView }>()
+const props = defineProps<{ view: PlayView, shapes: RoomShapes }>()
 
-const store = createRoomStore({
-  ...props.view,
-  refreshToken: async () => (await $fetch<PlayView>(`/api/play/${props.view.player.id}`)).socketToken
-})
+const store = createRoomStore({ ...props.view, shapes: props.shapes })
 provideRoomStore(store)
 
-onMounted(async () => {
-  await Promise.all([store.loadBoard(), store.loadFeed(false)])
+onMounted(() => {
   store.connect()
   if (boardEmpty.value) enterEditIfAllowed()
 })

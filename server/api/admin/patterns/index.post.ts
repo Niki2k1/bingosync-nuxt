@@ -1,8 +1,9 @@
-import { z } from 'zod'
+import { defineEventHandler } from 'nuxt/server'
+import * as v from 'valibot'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
-  const { pattern } = await readValidated(event, z.object({ pattern: z.string().trim().min(1).max(255) }))
+  const { pattern } = await readValidated(event, v.object({ pattern: v.pipe(v.string(), v.trim(), v.nonEmpty(), v.maxLength(255)) }))
   try {
     new RegExp(pattern, 'gi')
   } catch (error) {

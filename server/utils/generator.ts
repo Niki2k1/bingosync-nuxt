@@ -1,6 +1,3 @@
-import { readFileSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
-import vm from 'node:vm'
 import { BLANK_ID, CUSTOM_FIXED_ID, CUSTOM_ISAAC_ID, CUSTOM_RANDOMIZED_ID, CUSTOM_SRL_V5_ID, requireVariant } from '#shared/utils/games'
 
 export class GeneratorError extends Error {}
@@ -12,61 +9,104 @@ export interface GeneratedSquare {
 
 type Goal = { name?: string, [key: string]: unknown }
 
-const scriptCache = new Map<string, vm.Script>()
+/** Reads a generator source by its path inside generators/, e.g. `generator_bases/srl_generator_v5.js`. */
+export type SourceLoader = (path: string) => Promise<string | undefined>
 
-function loadScript(file: string): vm.Script {
-  let script = scriptCache.get(file)
-  if (!script) {
-    script = new vm.Script(readFileSync(file, 'utf8'), { filename: file })
-    scriptCache.set(file, script)
+// The generators ship with the server as Nitro server assets (see nuxt.config.ts).
+let loadSource: SourceLoader = async (path) => {
+  const raw = await useStorage('assets:generators').getItemRaw(path.replaceAll('/', ':'))
+  if (raw == null) return undefined
+  return typeof raw === 'string' ? raw : new TextDecoder().decode(raw as Uint8Array)
+}
+
+/** Swaps where sources come from (tests read them from disk). */
+export function setSourceLoader(loader: SourceLoader) {
+  loadSource = loader
+  sources.clear()
+}
+
+const sources = new Map<string, string>()
+const REQUIRE_RE = /require\(\s*["']([^"']+)["']\s*\)/g
+
+// Upstream paths look like "./generators/generator_bases/x.js" relative to the old app root;
+// anything else is relative to the requiring file.
+function resolvePath(request: string, from: string): string {
+  if (request.startsWith('./generators/')) return request.slice('./generators/'.length)
+  const parts = from.split('/').slice(0, -1)
+  for (const part of request.split('/')) {
+    if (part === '..') parts.pop()
+    else if (part !== '.') parts.push(part)
   }
-  return script
+  return parts.join('/')
 }
 
-function generatorsRoot(): string {
-  return resolve(useRuntimeConfig().generatorsDir)
+/** Loads a generator and everything it requires, so the card can be built synchronously. */
+async function preload(path: string, required = true) {
+  if (sources.has(path)) return
+  const code = await loadSource(path)
+  if (code === undefined) {
+    // A `require(...)` inside a goal text isn't a real dependency.
+    if (required) throw new GeneratorError(`Generator source not found: ${path}`)
+    return
+  }
+  sources.set(path, code)
+  for (const [, request] of code.matchAll(REQUIRE_RE)) await preload(resolvePath(request!, path), false)
 }
 
-// The upstream generator files are plain scripts that assign `bingoGenerator` and `bingoList`
-// as globals and `require()` their base generator with a path relative to the app root.
-// They also monkey-patch Math.random via seedrandom, so every card gets a fresh context.
-function runGenerator(gameKey: string, opts: Record<string, unknown>): unknown {
-  const root = generatorsRoot()
-  const timeout = useRuntimeConfig().generatorTimeoutMs
-  const moduleCache = new Map<string, { exports: unknown }>()
-  const context = vm.createContext({ console })
+/**
+ * A global object for one card. Reads fall through to the real globals; writes (the generators
+ * assign `bingoGenerator`, `bingoList` and friends without declaring them) stay in the sandbox.
+ * `Math` is a copy because seedrandom replaces `Math.random`.
+ */
+function createScope(globals: Record<string, unknown>) {
+  const scope: Record<PropertyKey, unknown> = { Math: Object.create(Math), console, ...globals }
+  return new Proxy(scope, {
+    has: () => true,
+    get: (target, key) => {
+      if (key === Symbol.unscopables) return undefined
+      return key in target ? target[key] : (globalThis as Record<PropertyKey, unknown>)[key]
+    },
+    set: (target, key, value) => {
+      target[key] = value
+      return true
+    }
+  })
+}
 
-  const requireFromContext = (from: string) => (request: string) => {
-    // Upstream paths look like "./generators/generator_bases/x.js" relative to the old app root.
-    const rel = request.replace(/^\.\/generators\//, './')
-    const file = request.startsWith('./generators/') ? resolve(root, rel) : resolve(dirname(from), request)
-    const cached = moduleCache.get(file)
+type ModuleFn = (module: { exports: unknown }, exports: unknown, require: (request: string) => unknown) => unknown
+
+// CommonJS-style wrapper inside `with (scope)`: the generators are sloppy-mode scripts written
+// for a fresh `node -` process, and this keeps their globals off the server's own.
+function compile(code: string, scope: object): ModuleFn {
+  // eslint-disable-next-line no-new-func
+  const factory = new Function('__scope', `with (__scope) { return function (module, exports, require) {\n${code}\n} }`)
+  return factory(scope) as ModuleFn
+}
+
+/**
+ * Runs a generator file the way upstream did (`node -` with the file plus
+ * `bingoGenerator(bingoList, opts)`). Sources must be preloaded.
+ *
+ * There is no `vm` (and no script timeout) in the wervt isolate. The generators are fixed files
+ * from this repo, and a runaway one is stopped by the isolate's CPU limit.
+ */
+function runGenerator(path: string, opts: Record<string, unknown>): unknown {
+  const scope = createScope({ __opts: opts })
+  const modules = new Map<string, { exports: unknown }>()
+  const requireFrom = (from: string) => (request: string) => {
+    const file = resolvePath(request, from)
+    const cached = modules.get(file)
     if (cached) return cached.exports
     const module = { exports: {} as unknown }
-    moduleCache.set(file, module)
-    const wrapper = new vm.Script(`(function (module, exports, require) {${readFileSync(file, 'utf8')}\n})`, { filename: file })
-    const fn = wrapper.runInContext(context, { timeout }) as (m: unknown, e: unknown, r: unknown) => void
-    fn(module, module.exports, requireFromContext(file))
+    modules.set(file, module)
+    compile(sources.get(file)!, scope).call(scope, module, module.exports, requireFrom(file))
     return module.exports
   }
-
-  const file = resolve(root, `${gameKey}_generator.js`)
-  context.require = requireFromContext(file)
-  context.module = { exports: {} }
-  context.__opts = opts
-
-  try {
-    loadScript(file).runInContext(context, { timeout })
-    const result = new vm.Script('bingoGenerator(bingoList, __opts)', { filename: `${gameKey}:eval` })
-      .runInContext(context, { timeout })
-    // Cross-realm values are copied through JSON so callers get ordinary arrays and objects.
-    return JSON.parse(JSON.stringify(result))
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('Script execution timed out')) {
-      throw new GeneratorError(`Took too long to generate a bingo board for game '${gameKey}'`)
-    }
-    throw new GeneratorError(`Failed to generate a bingo board for game '${gameKey}': ${(error as Error).message}`)
-  }
+  const main = compile(`${sources.get(path)!}\nreturn bingoGenerator(bingoList, __opts)`, scope)
+  const module = { exports: {} }
+  const result = main.call(scope, module, module.exports, requireFrom(path))
+  // Values are copied through JSON so callers never hold objects tied to the sandbox.
+  return JSON.parse(JSON.stringify(result))
 }
 
 function processCard(card: unknown): GeneratedSquare[] {
@@ -77,13 +117,20 @@ function processCard(card: unknown): GeneratedSquare[] {
   return goals.map((goal: Goal | null) => ({ name: String(goal?.name ?? '') }))
 }
 
-export function generateCard(variantId: number, seed: number, customBoard?: unknown[]): GeneratedSquare[] {
+export async function generateCard(variantId: number, seed: number, customBoard?: unknown[]): Promise<GeneratedSquare[]> {
   const variant = requireVariant(variantId)
   if (variantId === BLANK_ID) return Array.from({ length: 25 }, () => ({ name: '' }))
   if (variantId === CUSTOM_FIXED_ID) return processCard(customBoard ?? [])
   const opts: Record<string, unknown> = { seed: String(seed) }
   if (customBoard) opts.custom_board = customBoard
-  return processCard(runGenerator(variant.key, opts))
+  const path = `${variant.key}_generator.js`
+  try {
+    await preload(path)
+    return processCard(runGenerator(path, opts))
+  } catch (error) {
+    if (error instanceof GeneratorError) throw error
+    throw new GeneratorError(`Failed to generate a bingo board for game '${variant.key}': ${(error as Error).message}`)
+  }
 }
 
 export function randomSeed(): number {

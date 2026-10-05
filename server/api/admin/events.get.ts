@@ -1,4 +1,5 @@
-import { and, count, desc, eq, like } from 'drizzle-orm'
+import { defineEventHandler, getQuery } from 'nuxt/server'
+import { and, count, desc, eq, sql } from 'drizzle-orm'
 
 const PAGE_SIZE = 50
 
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const conditions = [
     type ? eq(events.type, type as typeof events.$inferSelect.type) : undefined,
     roomId ? eq(events.roomId, roomId) : undefined,
-    q ? like(events.payload, `%${q}%`) : undefined
+    q ? sql`${events.payload}::text ilike ${`%${q}%`}` : undefined
   ].filter((c): c is NonNullable<typeof c> => c !== undefined)
   const where = conditions.length ? and(...conditions) : undefined
   const [{ total = 0 } = {}] = await db.select({ total: count() }).from(events).where(where)
@@ -24,10 +25,9 @@ export default defineEventHandler(async (event) => {
     .where(where)
     .orderBy(desc(events.createdAt), desc(events.id))
     .limit(PAGE_SIZE).offset((page - 1) * PAGE_SIZE)
-  const list = []
-  for (const row of rows) {
-    const json = await eventToJson(row.event, row.player, { currentGameSeedHidden: false })
-    list.push({ ...json, room: { id: row.room.id, name: row.room.name } })
-  }
+  const list = rows.map(row => ({
+    ...toFeedEvent(row.event, playerToJson(row.player)),
+    room: { id: row.room.id, name: row.room.name }
+  }))
   return { events: list, page, pages: Math.max(1, Math.ceil(total / PAGE_SIZE)), total }
 })

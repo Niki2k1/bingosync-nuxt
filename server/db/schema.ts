@@ -1,94 +1,100 @@
-import { integer, sqliteTable, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
+import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 import type { PlayerColor, SquareColor } from '#shared/utils/colors'
+import type { EventPayload } from '#shared/types'
 
-const timestamp = () => integer({ mode: 'timestamp_ms' })
+export type { EventPayload }
 
-export const rooms = sqliteTable('rooms', {
+// Every table is read live by the room page through Electric shapes (server/api/rooms/[id]/shapes),
+// so column names are what the client sees: keep them camelCase like the TypeScript keys.
+const createdAt = () => timestamp({ withTimezone: true }).notNull().defaultNow()
+
+export const rooms = pgTable('rooms', {
   id: text().primaryKey(),
   name: text().notNull(),
   // The invite code is the only key to a room; it can be rotated without touching the room id.
   inviteCode: text().notNull(),
-  listed: integer({ mode: 'boolean' }).notNull().default(true),
-  twitchOnly: integer({ mode: 'boolean' }).notNull().default(false),
-  createdAt: timestamp().notNull().$defaultFn(() => new Date()),
-  active: integer({ mode: 'boolean' }).notNull().default(false),
-  hideCard: integer({ mode: 'boolean' }).notNull().default(false),
+  listed: boolean().notNull().default(true),
+  twitchOnly: boolean().notNull().default(false),
+  createdAt: createdAt(),
+  hideCard: boolean().notNull().default(false),
   playerCount: integer().notNull().default(0),
   currentGameId: integer(),
-  lastEventAt: timestamp().notNull().$defaultFn(() => new Date())
+  lastEventAt: timestamp({ withTimezone: true }).notNull().defaultNow()
 }, t => [
   uniqueIndex('rooms_invite_idx').on(t.inviteCode),
-  index('rooms_active_idx').on(t.active),
   index('rooms_created_players_idx').on(t.createdAt, t.playerCount)
 ])
 
-export const games = sqliteTable('games', {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const games = pgTable('games', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   roomId: text().notNull().references(() => rooms.id, { onDelete: 'cascade' }),
+  // Never part of a shape: hidden cards keep their seed secret until revealed.
   seed: integer().notNull(),
   variant: integer().notNull(),
-  lockout: integer({ mode: 'boolean' }).notNull().default(false),
-  createdAt: timestamp().notNull().$defaultFn(() => new Date()),
-  revealedAt: timestamp()
+  lockout: boolean().notNull().default(false),
+  createdAt: createdAt(),
+  revealedAt: timestamp({ withTimezone: true })
 }, t => [index('games_room_idx').on(t.roomId, t.createdAt)])
 
-export const squares = sqliteTable('squares', {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const squares = pgTable('squares', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  // Denormalized so one shape per room covers the board across new cards.
+  roomId: text().notNull().references(() => rooms.id, { onDelete: 'cascade' }),
   gameId: integer().notNull().references(() => games.id, { onDelete: 'cascade' }),
   slot: integer().notNull(),
   goal: text().notNull(),
   colorMask: integer().notNull().default(0)
-}, t => [uniqueIndex('squares_game_slot_idx').on(t.gameId, t.slot)])
+}, t => [
+  uniqueIndex('squares_game_slot_idx').on(t.gameId, t.slot),
+  index('squares_room_idx').on(t.roomId)
+])
 
-export const players = sqliteTable('players', {
+export const players = pgTable('players', {
   id: text().primaryKey(),
   roomId: text().notNull().references(() => rooms.id, { onDelete: 'cascade' }),
   name: text().notNull(),
   color: text().$type<PlayerColor>().notNull().default('red'),
-  spectator: integer({ mode: 'boolean' }).notNull().default(false),
+  spectator: boolean().notNull().default(false),
+  // Presence: the room page sends a heartbeat; players without one for a while go offline.
+  online: boolean().notNull().default(false),
+  lastSeenAt: timestamp({ withTimezone: true }),
   // Secret for the read-only OBS overlay URL of this player.
   overlayKey: text().notNull(),
   twitchId: text(),
   twitchLogin: text(),
-  createdAt: timestamp().notNull().$defaultFn(() => new Date())
-}, t => [index('players_room_idx').on(t.roomId)])
+  createdAt: createdAt()
+}, t => [
+  index('players_room_idx').on(t.roomId),
+  index('players_online_idx').on(t.online)
+])
 
-export type EventPayload =
-  | { type: 'chat', text: string }
-  | { type: 'goal', slot: number, goal: string, colors: PlayerColor[], color: PlayerColor, remove: boolean }
-  | { type: 'color', color: PlayerColor, moved?: number }
-  | { type: 'revealed' }
-  | { type: 'connection', status: 'connected' | 'disconnected' }
-  | { type: 'new-card', variant: number, seed: number, hideCard: boolean }
-  | { type: 'edit', slot: number, name: string }
-
-export const events = sqliteTable('events', {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const events = pgTable('events', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   roomId: text().notNull().references(() => rooms.id, { onDelete: 'cascade' }),
   playerId: text().notNull().references(() => players.id, { onDelete: 'cascade' }),
   type: text().$type<EventPayload['type']>().notNull(),
   playerColor: text().$type<SquareColor>().notNull(),
-  createdAt: timestamp().notNull().$defaultFn(() => new Date()),
-  payload: text({ mode: 'json' }).$type<EventPayload>().notNull()
+  createdAt: createdAt(),
+  payload: jsonb().$type<EventPayload>().notNull()
 }, t => [
   index('events_room_time_idx').on(t.roomId, t.createdAt),
   index('events_room_type_idx').on(t.roomId, t.type)
 ])
 
-export const filteredPatterns = sqliteTable('filtered_patterns', {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const filteredPatterns = pgTable('filtered_patterns', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   pattern: text().notNull()
 })
 
 export type NoticeType = 'notice' | 'announcement' | 'warning' | 'error'
 
-export const siteNotices = sqliteTable('site_notices', {
-  id: integer().primaryKey({ autoIncrement: true }),
+export const siteNotices = pgTable('site_notices', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   type: text().$type<NoticeType>().notNull().default('notice'),
   header: text().notNull().default(''),
   body: text().notNull().default(''),
-  visibleToUsers: integer({ mode: 'boolean' }).notNull().default(false),
-  visibleToAdmins: integer({ mode: 'boolean' }).notNull().default(false)
+  visibleToUsers: boolean().notNull().default(false),
+  visibleToAdmins: boolean().notNull().default(false)
 })
 
 export type Room = typeof rooms.$inferSelect

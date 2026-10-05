@@ -27,8 +27,7 @@ onMounted(() => {
 })
 onUnmounted(() => clearInterval(timer))
 
-const { user } = useUserSession()
-const twitchEnabled = useTwitchEnabled()
+const { user } = useAccount()
 const modeItems = [
   { label: 'Non-lockout', value: 'normal', description: 'Several players can own the same square.' },
   { label: 'Lockout', value: 'lockout', description: 'First to mark a square keeps it.' }
@@ -181,7 +180,7 @@ async function makeRoom() {
           <div class="space-y-2 pt-1">
             <UCheckbox v-model="state.hideCard" label="Hide the card until someone reveals it" />
             <UCheckbox v-model="state.spectator" label="Join as a spectator" />
-            <UCheckbox v-if="twitchEnabled && user?.twitch" v-model="state.twitchOnly" label="Only people signed in with Twitch can join" />
+            <UCheckbox v-if="user?.twitch" v-model="state.twitchOnly" label="Only people signed in with Twitch can join" />
           </div>
           <UButton type="submit" label="Create room" icon="i-lucide-plus" block :loading="submitting" />
         </UForm>

@@ -1,3 +1,4 @@
+import { defineEventHandler, createError, getRouterParam } from 'nuxt/server'
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
   const id = requireIdParam('id', getRouterParam(event, 'id'))
@@ -6,17 +7,19 @@ export default defineEventHandler(async (event) => {
     where: { id },
     with: {
       games: { orderBy: { createdAt: 'desc' }, with: { squares: { orderBy: { slot: 'asc' } } } },
-      players: { orderBy: { createdAt: 'asc' } }
+      players: { orderBy: { createdAt: 'asc' } },
+      events: { orderBy: { createdAt: 'asc', id: 'asc' } }
     }
   })
   if (!room) throw createError({ statusCode: 404, statusMessage: 'Room not found' })
-  const feed = await loadFeed(room, true, false)
+  const playersById = new Map(room.players.map(p => [p.id, playerToJson(p)]))
+  const latestNewCardId = room.events.findLast(e => e.type === 'new-card')?.id
   return {
     id: room.id,
     name: room.name,
     createdAt: room.createdAt.getTime(),
     lastEventAt: room.lastEventAt.getTime(),
-    active: room.active,
+    active: room.players.some(p => p.online),
     hideCard: room.hideCard,
     listed: room.listed,
     twitchOnly: room.twitchOnly,
@@ -37,8 +40,11 @@ export default defineEventHandler(async (event) => {
       rawColor: p.color,
       twitchLogin: p.twitchLogin,
       createdAt: p.createdAt.getTime(),
-      connected: hubIsConnected(room.id, p.id)
+      connected: p.online
     })),
-    events: feed.events
+    events: room.events.flatMap((e) => {
+      const player = playersById.get(e.playerId)
+      return player ? [toFeedEvent(e, player, { latestNewCardId })] : []
+    })
   }
 })

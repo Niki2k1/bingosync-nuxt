@@ -1,3 +1,4 @@
+import { createError } from 'nuxt/server'
 import { randomBytes, randomUUID } from 'node:crypto'
 
 // Ids are random bytes as unpadded base64url: 22 chars (128 bit) for players, 43 chars (256 bit)

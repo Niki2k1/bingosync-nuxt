@@ -1,11 +1,12 @@
-import { z } from 'zod'
+import { defineEventHandler } from 'nuxt/server'
+import * as v from 'valibot'
 
-export const noticeSchema = z.object({
-  type: z.enum(['notice', 'announcement', 'warning', 'error']).default('notice'),
-  header: z.string().default(''),
-  body: z.string().default(''),
-  visibleToUsers: z.boolean().default(false),
-  visibleToAdmins: z.boolean().default(false)
+export const noticeSchema = v.object({
+  type: v.optional(v.picklist(['notice', 'announcement', 'warning', 'error']), 'notice'),
+  header: v.optional(v.string(), ''),
+  body: v.optional(v.string(), ''),
+  visibleToUsers: v.optional(v.boolean(), false),
+  visibleToAdmins: v.optional(v.boolean(), false)
 })
 
 export default defineEventHandler(async (event) => {

@@ -1,3 +1,4 @@
+import { defineEventHandler, createError, getRouterParam } from 'nuxt/server'
 import type { InviteView } from '#shared/types'
 
 export default defineEventHandler(async (event): Promise<InviteView> => {

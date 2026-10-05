@@ -1,3 +1,4 @@
+import { defineEventHandler, getRouterParam } from 'nuxt/server'
 import { eq } from 'drizzle-orm'
 
 // Re-applies the blacklist to the room name and every player name in the room.

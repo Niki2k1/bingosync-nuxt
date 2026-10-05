@@ -1,3 +1,4 @@
+import { defineEventHandler, createError, getRouterParam } from 'nuxt/server'
 import { colorSchema } from '#shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
