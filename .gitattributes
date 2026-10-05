@@ -1,0 +1,4 @@
+# Upstream community generators and generated data: keep them out of the GitHub language bar and diffs.
+generators/** linguist-vendored
+tests/golden/** linguist-generated
+shared/utils/games.generated.ts linguist-generated
