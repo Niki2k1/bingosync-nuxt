@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.11.1",
-    "@wervt/nuxt": "^0.2.1",
+    "@wervt/nuxt": "^0.2.5",
     "drizzle-orm": "1.0.0-rc.4",
     "nuxt": "^4.6.0",
     "tailwindcss": "^4.3.3",
