@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.11.1",
-    "@wervt/nuxt": "^0.2.5",
+    "@wervt/nuxt": "^0.2.6",
     "drizzle-orm": "1.0.0-rc.4",
     "nuxt": "^4.6.0",
     "tailwindcss": "^4.3.3",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.130",
     "@types/node": "^26.5.0",
-    "@wervt/cli": "^0.2.1",
+    "@wervt/cli": "^0.2.6",
     "drizzle-kit": "1.0.0-rc.4",
     "typescript": "^5.9.3",
     "vitest": "^5.0.0",
