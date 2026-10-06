@@ -10,4 +10,5 @@ minimumReleaseAgeExclude:
   - '@nuxt/vite-builder@4.6.0'
   - '@nuxt/vite-server@4.6.0'
   - nuxt@4.6.0
-  - '@wervt/nuxt@0.1.0'
+  # Our own packages, released and checked by us.
+  - '@wervt/*'

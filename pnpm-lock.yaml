@@ -211,8 +211,8 @@ importers:
         specifier: ^4.11.1
         version: 4.11.1(b8b402d8615b141cc1d5cdd886d21175)
       '@wervt/nuxt':
-        specifier: ^0.1.0
-        version: 0.1.0(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(nuxt@4.6.0(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.152.0)(@types/node@26.5.0)(@vue/compiler-sfc@3.5.43)(acorn@8.18.0)(confbox@0.3.1)(db0@0.3.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(mlly@1.8.2)(rolldown@1.2.12)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.12)(rollup@4.63.1))(rollup@4.63.1)(srvx@1.0.5)(terser@5.51.2)(typescript@5.9.3)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))(vue-tsc@3.3.11(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: ^0.2.1
+        version: 0.2.1(42d720be8671e81ca0dc31ff85512a05)
       drizzle-orm:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)
@@ -2283,8 +2283,8 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
-  '@wervt/nuxt@0.1.0':
-    resolution: {integrity: sha512-NeKSVOh3U8uLLDtwV32W6Wj5sku8xreon4DhA+pt0e7Zl/FMCAZ6smOJk9ah9eNRIWUk8pdaHUsOTMUdmZs0Bg==}
+  '@wervt/nuxt@0.2.1':
+    resolution: {integrity: sha512-eH/aNYQ4e0LwsZQENo3wI/lCzZx4t8htNgHCPgBYBUjl5gY2MFGf0xwavKUd0QUbPU18XwvnOpzuuJoxLL1c5Q==}
     peerDependencies:
       drizzle-orm: 1.0.0-rc.4
       nuxt: '>=4.2'
@@ -3063,6 +3063,67 @@ packages:
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
+
+  evlog@2.30.0:
+    resolution: {integrity: sha512-5rfADenoi5YFDjEpljSxpPgqfJl0XAP5pPOCeJqCXA8BCN2gzeecqCXZB5uDJyB/4nvD52z4lCKfOCCXHh947A==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      '@nestjs/common': '>=11.2.3'
+      '@nuxt/kit': ^4.4.2
+      '@orpc/server': '>=1.15.0'
+      '@tanstack/start-client-core': ^1.170.29
+      ai: '>=6.0.168 <8.0.0'
+      elysia: '>=1.4.30'
+      eve: '>=0.30.0'
+      express: '>=5.2.1'
+      fastify: '>=5.12.4'
+      h3: ^1.15.11
+      hono: '>=4.13.7'
+      next: '>=16.3.4'
+      nitro: ^3.0.260311-beta
+      nitropack: ^2.13.4
+      ofetch: ^1.5.1
+      react: '>=19.3.0'
+      react-router: '>=7.18.3'
+      vite: ^7.0.0 || ^8.0.0
+    peerDependenciesMeta:
+      '@nestjs/common':
+        optional: true
+      '@nuxt/kit':
+        optional: true
+      '@orpc/server':
+        optional: true
+      '@tanstack/start-client-core':
+        optional: true
+      ai:
+        optional: true
+      elysia:
+        optional: true
+      eve:
+        optional: true
+      express:
+        optional: true
+      fastify:
+        optional: true
+      h3:
+        optional: true
+      hono:
+        optional: true
+      next:
+        optional: true
+      nitro:
+        optional: true
+      nitropack:
+        optional: true
+      ofetch:
+        optional: true
+      react:
+        optional: true
+      react-router:
+        optional: true
+      vite:
+        optional: true
 
   execa@8.0.1:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
@@ -7443,15 +7504,34 @@ snapshots:
     dependencies:
       vue: 3.5.43(typescript@5.9.3)
 
-  '@wervt/nuxt@0.1.0(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(nuxt@4.6.0(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.152.0)(@types/node@26.5.0)(@vue/compiler-sfc@3.5.43)(acorn@8.18.0)(confbox@0.3.1)(db0@0.3.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(mlly@1.8.2)(rolldown@1.2.12)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.12)(rollup@4.63.1))(rollup@4.63.1)(srvx@1.0.5)(terser@5.51.2)(typescript@5.9.3)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))(vue-tsc@3.3.11(typescript@5.9.3)))(typescript@5.9.3)':
+  '@wervt/nuxt@0.2.1(42d720be8671e81ca0dc31ff85512a05)':
     dependencies:
       '@electric-sql/client': 1.5.28
       drizzle-orm: 1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)
+      evlog: 2.30.0(@nuxt/kit@4.6.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))))(h3@1.15.11)(nitropack@2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))(ofetch@1.5.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
       nuxt: 4.6.0(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.152.0)(@types/node@26.5.0)(@vue/compiler-sfc@3.5.43)(acorn@8.18.0)(confbox@0.3.1)(db0@0.3.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(mlly@1.8.2)(rolldown@1.2.12)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.12)(rollup@4.63.1))(rollup@4.63.1)(srvx@1.0.5)(terser@5.51.2)(typescript@5.9.3)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))(vue-tsc@3.3.11(typescript@5.9.3))
       postgres: 3.4.9
       valibot: 1.5.0(typescript@5.9.3)
     transitivePeerDependencies:
+      - '@nestjs/common'
+      - '@nuxt/kit'
+      - '@orpc/server'
+      - '@tanstack/start-client-core'
+      - ai
+      - elysia
+      - eve
+      - express
+      - fastify
+      - h3
+      - hono
+      - next
+      - nitro
+      - nitropack
+      - ofetch
+      - react
+      - react-router
       - typescript
+      - vite
 
   abbrev@3.0.1: {}
 
@@ -8079,6 +8159,14 @@ snapshots:
       - bare-abort-controller
 
   events@3.3.0: {}
+
+  evlog@2.30.0(@nuxt/kit@4.6.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))))(h3@1.15.11)(nitropack@2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))(ofetch@1.5.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)):
+    optionalDependencies:
+      '@nuxt/kit': 4.6.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))
+      h3: 1.15.11
+      nitropack: 2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
+      ofetch: 1.5.1
+      vite: 8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
 
   execa@8.0.1:
     dependencies:
