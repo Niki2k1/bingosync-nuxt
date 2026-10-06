@@ -212,7 +212,7 @@ importers:
         version: 4.11.1(b8b402d8615b141cc1d5cdd886d21175)
       '@wervt/nuxt':
         specifier: ^0.2.1
-        version: 0.2.1(42d720be8671e81ca0dc31ff85512a05)
+        version: 0.2.1(a726c451e44b728fa264b9df4c6052ad)
       drizzle-orm:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)
@@ -238,6 +238,9 @@ importers:
       '@types/node':
         specifier: ^26.5.0
         version: 26.5.0
+      '@wervt/cli':
+        specifier: ^0.2.1
+        version: 0.2.1
       drizzle-kit:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4
@@ -381,16 +384,8 @@ packages:
     resolution: {integrity: sha512-CuNiSqg7+e1cO/GjffyMOm5Tt2jUF9CWHHnvQ/UkqvtkGfHdgwEC0wpmq7fkN3gxwpRnrAN0WzO3vREKmNolMQ==}
     engines: {node: '>=18'}
 
-  '@clack/core@1.4.3':
-    resolution: {integrity: sha512-/kr3UWNtdJfxZtPgDqUOmG2pvwlmcLGheex5yiZKdwbzZJxhV+HMNR9QNmyY5cGwTNV6LrR7Jtp+KjhUAP1qBQ==}
-    engines: {node: '>= 20.12.0'}
-
   '@clack/core@1.5.1':
     resolution: {integrity: sha512-iHTrHA8MtVuLl2TfZySmcKv1qO2PoyC9Z7pfSDozEuV5vtY3/wcOPKJXlqJ5Oq2Cx5DDGQGAMVx6HZfRRoVEbQ==}
-    engines: {node: '>= 20.12.0'}
-
-  '@clack/prompts@1.7.0':
-    resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
     engines: {node: '>= 20.12.0'}
 
   '@clack/prompts@1.8.1':
@@ -2283,6 +2278,10 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
+  '@wervt/cli@0.2.1':
+    resolution: {integrity: sha512-zL3kvCzsBdd+7j/invq5pD4ZiSgmAEGcrvsYr0+ku4vk02vikf7iMLI4RPRzJiMm08rNh8hSxc+YXnA3r96wlQ==}
+    hasBin: true
+
   '@wervt/nuxt@0.2.1':
     resolution: {integrity: sha512-eH/aNYQ4e0LwsZQENo3wI/lCzZx4t8htNgHCPgBYBUjl5gY2MFGf0xwavKUd0QUbPU18XwvnOpzuuJoxLL1c5Q==}
     peerDependencies:
@@ -3764,6 +3763,10 @@ packages:
   mocked-exports@0.1.1:
     resolution: {integrity: sha512-aF7yRQr/Q0O2/4pIXm6PZ5G+jAd7QS4Yu8m+WEeEHGnbo+7mE36CbLSDQiXYV8bVL3NfmdeqPJct0tUlnjVSnA==}
 
+  modern-tar@0.8.5:
+    resolution: {integrity: sha512-snEhs+6G5Tjd4I7tLCDOaoln2RgE0bD19RzEKgvgK2hZ5VKy3MpLhLTZ2fWpXSTg4K2cyPwp+VHATFJhxfnOeA==}
+    engines: {node: '>=18.0.0'}
+
   motion-dom@13.2.0:
     resolution: {integrity: sha512-N6gdSoWRDk0Rh/fVtlqUtLs+fEN3ELFZI3cn3IQE9Mnf3E+Mh8wjO6MstzCOPFh4Yf0L1as5m2eUyYWj8ylVSQ==}
 
@@ -3883,6 +3886,11 @@ packages:
         optional: true
       '@types/node':
         optional: true
+
+  nypm@0.6.10:
+    resolution: {integrity: sha512-W72Hrj1petq+b3Hk2aAC+9zswetlIFTnDW4s5djseZh2nYqBbyQLOtj472HwcbcWykPBUW1WpWpjOd4nK6gMRw==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   nypm@0.6.9:
     resolution: {integrity: sha512-zxlE2yvSWZWmHcNdT3+5zV2lrCogeE9YOklHrR3dFjqutq5wO7GFDYLFDRXLsYnJzwvy/im9fYoxePvS0VTW0w==}
@@ -5479,20 +5487,8 @@ snapshots:
     dependencies:
       fontkitten: 1.0.3
 
-  '@clack/core@1.4.3':
-    dependencies:
-      fast-wrap-ansi: 0.2.2
-      sisteransi: 1.0.5
-
   '@clack/core@1.5.1':
     dependencies:
-      fast-wrap-ansi: 0.2.2
-      sisteransi: 1.0.5
-
-  '@clack/prompts@1.7.0':
-    dependencies:
-      '@clack/core': 1.4.3
-      fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
@@ -5967,7 +5963,7 @@ snapshots:
 
   '@nuxt/devtools-wizard@3.4.2':
     dependencies:
-      '@clack/prompts': 1.7.0
+      '@clack/prompts': 1.8.1
       consola: 3.4.2
       diff: 8.0.4
       execa: 8.0.1
@@ -7504,11 +7500,19 @@ snapshots:
     dependencies:
       vue: 3.5.43(typescript@5.9.3)
 
-  '@wervt/nuxt@0.2.1(42d720be8671e81ca0dc31ff85512a05)':
+  '@wervt/cli@0.2.1':
+    dependencies:
+      '@clack/prompts': 1.8.1
+      citty: 0.2.2
+      modern-tar: 0.8.5
+      nypm: 0.6.10
+      tinyexec: 1.3.1
+
+  '@wervt/nuxt@0.2.1(a726c451e44b728fa264b9df4c6052ad)':
     dependencies:
       '@electric-sql/client': 1.5.28
       drizzle-orm: 1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)
-      evlog: 2.30.0(@nuxt/kit@4.6.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))))(h3@1.15.11)(nitropack@2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))(ofetch@1.5.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
+      evlog: 2.30.0(@nuxt/kit@4.5.2(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.12)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))))(h3@1.15.11)(nitropack@2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))(ofetch@1.5.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
       nuxt: 4.6.0(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.152.0)(@types/node@26.5.0)(@vue/compiler-sfc@3.5.43)(acorn@8.18.0)(confbox@0.3.1)(db0@0.3.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(mlly@1.8.2)(rolldown@1.2.12)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.12)(rollup@4.63.1))(rollup@4.63.1)(srvx@1.0.5)(terser@5.51.2)(typescript@5.9.3)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))(vue-tsc@3.3.11(typescript@5.9.3))
       postgres: 3.4.9
       valibot: 1.5.0(typescript@5.9.3)
@@ -8160,9 +8164,9 @@ snapshots:
 
   events@3.3.0: {}
 
-  evlog@2.30.0(@nuxt/kit@4.6.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))))(h3@1.15.11)(nitropack@2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))(ofetch@1.5.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)):
+  evlog@2.30.0(@nuxt/kit@4.5.2(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.12)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))))(h3@1.15.11)(nitropack@2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))(ofetch@1.5.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)):
     optionalDependencies:
-      '@nuxt/kit': 4.6.0(@nuxt/schema@4.6.0)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))
+      '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.12)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.12)(rollup@4.63.1)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))
       h3: 1.15.11
       nitropack: 2.13.4(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4))(rolldown@1.2.12)(srvx@1.0.5)(vite@8.3.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
       ofetch: 1.5.1
@@ -8773,6 +8777,8 @@ snapshots:
 
   mocked-exports@0.1.1: {}
 
+  modern-tar@0.8.5: {}
+
   motion-dom@13.2.0:
     dependencies:
       motion-utils: 13.0.0
@@ -9113,6 +9119,12 @@ snapshots:
       - webpack
       - xml2js
       - yaml
+
+  nypm@0.6.10:
+    dependencies:
+      citty: 0.2.2
+      pathe: 2.0.3
+      tinyexec: 1.3.1
 
   nypm@0.6.9:
     dependencies:
