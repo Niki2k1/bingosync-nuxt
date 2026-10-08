@@ -211,8 +211,8 @@ importers:
         specifier: ^4.11.1
         version: 4.11.1(a663663eeee46c201243c99a4065ed58)
       '@wervt/nuxt':
-        specifier: ^0.2.6
-        version: 0.2.6(424793a7f93be645cbc5202578710285)
+        specifier: ^0.2.7
+        version: 0.2.7(424793a7f93be645cbc5202578710285)
       drizzle-orm:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(postgres@3.4.9)(valibot@1.5.0(typescript@5.9.3))(zod@4.5.4)
@@ -2282,8 +2282,8 @@ packages:
     resolution: {integrity: sha512-LMRxVzSUBZadOzzAAdCzpnNktdRYlrS7EY849LU+bQMFu6IWx0VqMIWrJIoAq/JOPRKGM/Bjpd+kDNz7aAmRuA==}
     hasBin: true
 
-  '@wervt/nuxt@0.2.6':
-    resolution: {integrity: sha512-J2UvIi5GVn5d8otPuSAwP0ifu6+Wo0xma8q5IgW4R/EatK1vhuNVTS8+/HUNQQnaIk1V8N6qiU/pOZHeQCrsXw==}
+  '@wervt/nuxt@0.2.7':
+    resolution: {integrity: sha512-uW6bjXdzwutLcZCSMZVjQm5eYhMimORWma1ORFe9x3RiGVL288u+WYtRPAH7FImO42k2fXDnxW/8eblpMUV5mg==}
     peerDependencies:
       drizzle-orm: 1.0.0-rc.4
       nuxt: '>=4.2'
@@ -7511,7 +7511,7 @@ snapshots:
       nypm: 0.6.10
       tinyexec: 1.3.1
 
-  '@wervt/nuxt@0.2.6(424793a7f93be645cbc5202578710285)':
+  '@wervt/nuxt@0.2.7(424793a7f93be645cbc5202578710285)':
     dependencies:
       '@electric-sql/client': 1.5.28
       aws4fetch: 1.0.20
