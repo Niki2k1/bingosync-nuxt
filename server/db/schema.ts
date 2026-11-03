@@ -1,6 +1,6 @@
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 import type { PlayerColor, SquareColor } from '#shared/utils/colors'
-import type { EventPayload } from '#shared/types'
+import type { EventPayload, TemplateMode } from '#shared/types'
 
 export type { EventPayload }
 
@@ -97,9 +97,25 @@ export const siteNotices = pgTable('site_notices', {
   visibleToAdmins: boolean().notNull().default(false)
 })
 
+// Boards prepared ahead of a race. The id is the share link: anyone who has it may start a room
+// with the board, only the owner (a wervt user) may change it.
+export const templates = pgTable('templates', {
+  id: text().primaryKey(),
+  ownerId: text().notNull(),
+  // Kept so a shared link can say whose board it is without asking wervt for the user.
+  ownerName: text().notNull(),
+  name: text().notNull(),
+  // fixed: exactly 25 squares in board order (blanks allowed); random: 25 or more goals to shuffle.
+  mode: text().$type<TemplateMode>().notNull().default('fixed'),
+  goals: jsonb().$type<string[]>().notNull(),
+  createdAt: createdAt(),
+  updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow()
+}, t => [index('templates_owner_idx').on(t.ownerId, t.updatedAt)])
+
 export type Room = typeof rooms.$inferSelect
 export type Game = typeof games.$inferSelect
 export type Square = typeof squares.$inferSelect
 export type Player = typeof players.$inferSelect
 export type EventRow = typeof events.$inferSelect
 export type SiteNotice = typeof siteNotices.$inferSelect
+export type Template = typeof templates.$inferSelect

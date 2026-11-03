@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RoomSettings } from '#shared/types'
+import type { RoomSettings, TemplateSummary } from '#shared/types'
 import { CUSTOM_GROUP_ID } from '#shared/utils/games'
 import { getVariant } from '#shared/utils/games'
 
@@ -14,7 +14,12 @@ const state = reactive({
   seed: undefined as number | undefined,
   hideCard: false
 })
-const usesSeed = computed(() => (state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)))
+const template = ref<TemplateSummary>()
+const { templates } = useMyTemplates()
+const usesSeed = computed(() => {
+  if (template.value) return template.value.mode === 'random'
+  return state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)
+})
 const modeItems = [
   { label: 'Non-lockout', value: 'normal', description: 'Several players can own the same square.' },
   { label: 'Lockout', value: 'lockout', description: 'First to mark a square keeps it.' }
@@ -33,11 +38,12 @@ watch(open, (isOpen) => {
   state.hideCard = store.settings.value.hideCard
   state.seed = undefined
   state.customJson = ''
+  template.value = undefined
 })
 
 async function generate() {
   formError.value = undefined
-  if (state.variant === undefined) {
+  if (state.variant === undefined && !template.value) {
     form.value?.setErrors([{ name: 'group', message: 'Pick a game' }])
     return
   }
@@ -46,8 +52,9 @@ async function generate() {
     const settings = await $fetch<RoomSettings>(`/api/rooms/${store.id}/new-card`, {
       method: 'POST',
       body: {
-        variant: state.variant,
-        customJson: state.group === CUSTOM_GROUP_ID ? state.customJson : '',
+        ...(template.value
+          ? templateCardFields(template.value)
+          : { variant: state.variant, customJson: state.group === CUSTOM_GROUP_ID ? state.customJson : '' }),
         lockout: state.mode === 'lockout',
         seed: state.seed ?? '',
         hideCard: state.hideCard
@@ -57,7 +64,7 @@ async function generate() {
     open.value = false
   } catch (error) {
     const { message, field } = extractApiError(error)
-    if (field) form.value?.setErrors([{ name: field === 'variant' ? 'group' : field, message }])
+    if (field) form.value?.setErrors([{ name: field === 'variant' && !template.value ? 'group' : field, message }])
     else formError.value = message
   } finally {
     submitting.value = false
@@ -70,7 +77,10 @@ async function generate() {
     <template #body>
       <UForm id="new-card-form" ref="form" :state="state" class="space-y-4" @submit="generate">
         <UAlert v-if="formError" color="error" variant="subtle" :title="formError" />
-        <SiteGameSelectFields v-model:group="state.group" v-model:variant="state.variant" v-model:custom-json="state.customJson" />
+        <UFormField v-if="templates.length" name="templateId" label="Template" :hint="template ? undefined : 'Optional'">
+          <TemplatePicker v-model="template" />
+        </UFormField>
+        <SiteGameSelectFields v-if="!template" v-model:group="state.group" v-model:variant="state.variant" v-model:custom-json="state.customJson" />
         <UFormField name="mode" label="Mode">
           <URadioGroup v-model="state.mode" :items="modeItems" variant="card" orientation="horizontal" indicator="hidden" :ui="{ fieldset: 'w-full gap-2', item: 'flex-1' }" />
         </UFormField>

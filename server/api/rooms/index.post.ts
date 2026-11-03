@@ -6,15 +6,9 @@ export default defineEventHandler(async (event) => {
   const input = await readValidated(event, createRoomSchema)
   const twitch = getTwitch(event)
   if (input.twitchOnly && !twitch) badRequest('Sign in with Twitch to make a Twitch-only room', 'twitchOnly')
-  let customBoard: unknown[] | undefined
+  const card = await resolveCardSource(input)
   try {
-    customBoard = validateCustomBoard(input.variant, input.customJson)
-  } catch (error) {
-    if (error instanceof InvalidBoardError) badRequest(error.message, 'customJson')
-    throw error
-  }
-  try {
-    const { room, creator } = await createRoom({ ...input, customBoard, twitch })
+    const { room, creator } = await createRoom({ ...input, ...card, twitch })
     await rememberRoomPlayer(event, room.id, creator.id)
     return { roomId: room.id, playerId: creator.id, inviteCode: room.inviteCode }
   } catch (error) {

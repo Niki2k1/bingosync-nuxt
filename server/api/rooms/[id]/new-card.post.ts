@@ -5,15 +5,9 @@ export default defineEventHandler(async (event) => {
   const id = requireIdParam('id', getRouterParam(event, 'id'))
   const { room, player } = await requireRoomPlayer(event, id)
   const input = await readValidated(event, newCardSchema)
-  let customBoard: unknown[] | undefined
+  const card = await resolveCardSource(input)
   try {
-    customBoard = validateCustomBoard(input.variant, input.customJson)
-  } catch (error) {
-    if (error instanceof InvalidBoardError) badRequest(error.message, 'customJson')
-    throw error
-  }
-  try {
-    const game = await newCard(room, player, { ...input, customBoard })
+    const game = await newCard(room, player, { ...input, ...card })
     return roomSettings({ ...room, hideCard: input.hideCard }, game)
   } catch (error) {
     if (error instanceof GeneratorError) badRequest(error.message, 'variant')

@@ -6,6 +6,7 @@ const logoutUrl = computed(() => wervtLogoutUrl(route.fullPath))
 
 const items = [
   { label: 'Rooms', to: '/' },
+  { label: 'Templates', to: '/templates' },
   { label: 'History', to: '/history' },
   { label: 'About', to: '/about' }
 ]

@@ -177,3 +177,20 @@ export interface TwitchProfile {
   displayName: string
   avatar: string
 }
+
+export type TemplateMode = 'fixed' | 'random'
+
+export interface TemplateSummary {
+  id: string
+  name: string
+  mode: TemplateMode
+  goalCount: number
+  updatedAt: number
+}
+
+export interface TemplateJson extends TemplateSummary {
+  goals: string[]
+  ownerName: string
+  /** Whether the signed-in visitor owns it and may edit it. */
+  mine: boolean
+}

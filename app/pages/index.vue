@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RoomListEntry, SiteNoticeJson } from '#shared/types'
+import type { RoomListEntry, SiteNoticeJson, TemplateJson, TemplateSummary } from '#shared/types'
 import { BLANK_ID, CUSTOM_GROUP_ID } from '#shared/utils/games'
 import { getVariant } from '#shared/utils/games'
 
@@ -28,6 +28,18 @@ onMounted(() => {
 onUnmounted(() => clearInterval(timer))
 
 const { user } = useAccount()
+const route = useRoute()
+
+// `/?template=<id>` comes from a template page or a shared link and preselects that board.
+const linkedTemplateId = typeof route.query.template === 'string' ? route.query.template : undefined
+const { data: linkedTemplate } = await useFetch<TemplateJson>(`/api/templates/${linkedTemplateId}`, {
+  key: `template-${linkedTemplateId}`,
+  immediate: !!linkedTemplateId
+})
+const template = ref<TemplateSummary | undefined>(linkedTemplate.value ?? undefined)
+const { templates } = useMyTemplates()
+const showTemplatePicker = computed(() => !!template.value || templates.value.length > 0)
+
 const modeItems = [
   { label: 'Non-lockout', value: 'normal', description: 'Several players can own the same square.' },
   { label: 'Lockout', value: 'lockout', description: 'First to mark a square keeps it.' }
@@ -50,14 +62,17 @@ const state = reactive({
   visibility: 'private' as 'private' | 'public',
   twitchOnly: false
 })
-const usesSeed = computed(() => (state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)))
+const usesSeed = computed(() => {
+  if (template.value) return template.value.mode === 'random'
+  return state.variant === undefined ? true : (getVariant(state.variant)?.usesSeed ?? true)
+})
 const form = useTemplateRef('form')
 const submitting = ref(false)
 const formError = ref<string>()
 
 async function makeRoom() {
   formError.value = undefined
-  if (state.variant === undefined) {
+  if (state.variant === undefined && !template.value) {
     form.value?.setErrors([{ name: 'group', message: 'Pick a game' }])
     return
   }
@@ -68,8 +83,9 @@ async function makeRoom() {
       body: {
         name: state.name.trim() || suggestedName.value,
         nickname: state.nickname,
-        variant: state.variant,
-        customJson: state.group === CUSTOM_GROUP_ID ? state.customJson : '',
+        ...(template.value
+          ? templateCardFields(template.value)
+          : { variant: state.variant, customJson: state.group === CUSTOM_GROUP_ID ? state.customJson : '' }),
         lockout: state.mode === 'lockout',
         seed: state.seed ?? '',
         spectator: state.spectator,
@@ -82,7 +98,7 @@ async function makeRoom() {
     await navigateTo(`/play/${playerId}`)
   } catch (error) {
     const { message, field } = extractApiError(error)
-    if (field) form.value?.setErrors([{ name: field === 'variant' ? 'group' : field, message }])
+    if (field) form.value?.setErrors([{ name: field === 'variant' && !template.value ? 'group' : field, message }])
     else formError.value = message
   } finally {
     submitting.value = false
@@ -165,7 +181,10 @@ async function makeRoom() {
           <UFormField name="nickname" label="Your nickname" required>
             <UInput v-model="state.nickname" maxlength="50" class="w-full" autocomplete="nickname" />
           </UFormField>
-          <SiteGameSelectFields v-model:group="state.group" v-model:variant="state.variant" v-model:custom-json="state.customJson" />
+          <UFormField v-if="showTemplatePicker" name="templateId" label="Template" :hint="template ? undefined : 'Optional'">
+            <TemplatePicker v-model="template" :extra="linkedTemplate ?? undefined" />
+          </UFormField>
+          <SiteGameSelectFields v-if="!template" v-model:group="state.group" v-model:variant="state.variant" v-model:custom-json="state.customJson" />
           <UFormField name="mode" label="Mode">
             <URadioGroup v-model="state.mode" :items="modeItems" variant="card" orientation="horizontal" indicator="hidden" :ui="{ fieldset: 'w-full gap-2', item: 'flex-1' }" />
           </UFormField>

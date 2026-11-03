@@ -32,5 +32,6 @@ const seedText = computed(() => {
       </div>
     </dl>
     <UButton label="New card" icon="i-lucide-refresh-cw" color="neutral" variant="subtle" block class="mt-4" @click="store.newCardOpen.value = true" />
+    <RoomSaveTemplateButton v-if="!store.readonly" class="mt-2" />
   </UCard>
 </template>
