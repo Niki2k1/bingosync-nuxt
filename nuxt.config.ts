@@ -12,6 +12,16 @@ export default defineNuxtConfig({
 
   modules: ['@wervt/nuxt', '@nuxt/ui'],
 
+  wervt: {
+    // Players sign in to Bingosync, not to wervt: the shared login should look like this app.
+    brand: {
+      name: 'Bingosync',
+      icon: '/favicon.png',
+      color: '#3f3f46',
+      securedByWervt: false
+    }
+  },
+
   css: ['~/assets/css/main.css'],
 
   app: {

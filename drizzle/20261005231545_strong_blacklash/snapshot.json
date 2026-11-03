@@ -1,54 +1,516 @@
 {
-  "version": "8",
+  "type": "base",
+  "version": "9",
   "dialect": "postgres",
   "id": "49e45d1c-1cdb-4957-abcd-3525646a6ec8",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "events"
+      ],
+      "writes": [
+        "s|tbl|public.events",
+        "n|tbl|public.events",
+        "e|tbl|public.events",
+        "n|rel|public.events",
+        "n|type|public.events",
+        "n|rel|public.events_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "filtered_patterns"
+      ],
+      "writes": [
+        "s|tbl|public.filtered_patterns",
+        "n|tbl|public.filtered_patterns",
+        "e|tbl|public.filtered_patterns",
+        "n|rel|public.filtered_patterns",
+        "n|type|public.filtered_patterns",
+        "n|rel|public.filtered_patterns_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "games"
+      ],
+      "writes": [
+        "s|tbl|public.games",
+        "n|tbl|public.games",
+        "e|tbl|public.games",
+        "n|rel|public.games",
+        "n|type|public.games",
+        "n|rel|public.games_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "players"
+      ],
+      "writes": [
+        "s|tbl|public.players",
+        "n|tbl|public.players",
+        "e|tbl|public.players",
+        "n|rel|public.players",
+        "n|type|public.players",
+        "n|rel|public.players_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "rooms"
+      ],
+      "writes": [
+        "s|tbl|public.rooms",
+        "n|tbl|public.rooms",
+        "e|tbl|public.rooms",
+        "n|rel|public.rooms",
+        "n|type|public.rooms",
+        "n|rel|public.rooms_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "site_notices"
+      ],
+      "writes": [
+        "s|tbl|public.site_notices",
+        "n|tbl|public.site_notices",
+        "e|tbl|public.site_notices",
+        "n|rel|public.site_notices",
+        "n|type|public.site_notices",
+        "n|rel|public.site_notices_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "squares"
+      ],
+      "writes": [
+        "s|tbl|public.squares",
+        "n|tbl|public.squares",
+        "e|tbl|public.squares",
+        "n|rel|public.squares",
+        "n|type|public.squares",
+        "n|rel|public.squares_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "events",
+        "events_room_time_idx"
+      ],
+      "writes": [
+        "s|idx|public.events_room_time_idx",
+        "n|idx|public.events_room_time_idx",
+        "e|idx|public.events_room_time_idx",
+        "n|rel|public.events_room_time_idx"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|col|public.events.roomId",
+        "n|col|public.events.createdAt"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "events",
+        "events_room_type_idx"
+      ],
+      "writes": [
+        "s|idx|public.events_room_type_idx",
+        "n|idx|public.events_room_type_idx",
+        "e|idx|public.events_room_type_idx",
+        "n|rel|public.events_room_type_idx"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|col|public.events.roomId",
+        "n|col|public.events.type"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "games",
+        "games_room_idx"
+      ],
+      "writes": [
+        "s|idx|public.games_room_idx",
+        "n|idx|public.games_room_idx",
+        "e|idx|public.games_room_idx",
+        "n|rel|public.games_room_idx"
+      ],
+      "reads": [
+        "n|tbl|public.games",
+        "n|sch|public",
+        "n|col|public.games.roomId",
+        "n|col|public.games.createdAt"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "players",
+        "players_room_idx"
+      ],
+      "writes": [
+        "s|idx|public.players_room_idx",
+        "n|idx|public.players_room_idx",
+        "e|idx|public.players_room_idx",
+        "n|rel|public.players_room_idx"
+      ],
+      "reads": [
+        "n|tbl|public.players",
+        "n|sch|public",
+        "n|col|public.players.roomId"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "players",
+        "players_online_idx"
+      ],
+      "writes": [
+        "s|idx|public.players_online_idx",
+        "n|idx|public.players_online_idx",
+        "e|idx|public.players_online_idx",
+        "n|rel|public.players_online_idx"
+      ],
+      "reads": [
+        "n|tbl|public.players",
+        "n|sch|public",
+        "n|col|public.players.online"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "rooms",
+        "rooms_invite_idx"
+      ],
+      "writes": [
+        "s|idx|public.rooms_invite_idx",
+        "n|idx|public.rooms_invite_idx",
+        "e|idx|public.rooms_invite_idx",
+        "n|rel|public.rooms_invite_idx"
+      ],
+      "reads": [
+        "n|tbl|public.rooms",
+        "n|sch|public",
+        "n|col|public.rooms.inviteCode"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "rooms",
+        "rooms_created_players_idx"
+      ],
+      "writes": [
+        "s|idx|public.rooms_created_players_idx",
+        "n|idx|public.rooms_created_players_idx",
+        "e|idx|public.rooms_created_players_idx",
+        "n|rel|public.rooms_created_players_idx"
+      ],
+      "reads": [
+        "n|tbl|public.rooms",
+        "n|sch|public",
+        "n|col|public.rooms.createdAt",
+        "n|col|public.rooms.playerCount"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "squares",
+        "squares_game_slot_idx"
+      ],
+      "writes": [
+        "s|idx|public.squares_game_slot_idx",
+        "n|idx|public.squares_game_slot_idx",
+        "e|idx|public.squares_game_slot_idx",
+        "n|rel|public.squares_game_slot_idx"
+      ],
+      "reads": [
+        "n|tbl|public.squares",
+        "n|sch|public",
+        "n|col|public.squares.gameId",
+        "n|col|public.squares.slot"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "squares",
+        "squares_room_idx"
+      ],
+      "writes": [
+        "s|idx|public.squares_room_idx",
+        "n|idx|public.squares_room_idx",
+        "e|idx|public.squares_room_idx",
+        "n|rel|public.squares_room_idx"
+      ],
+      "reads": [
+        "n|tbl|public.squares",
+        "n|sch|public",
+        "n|col|public.squares.roomId"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "events"
+      ],
+      "writes": [
+        "s|fk|public.events.events_roomId_rooms_id_fkey",
+        "n|fk|public.events.events_roomId_rooms_id_fkey",
+        "e|fk|public.events.events_roomId_rooms_id_fkey",
+        "n|con|public.events.events_roomId_rooms_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|tbl|public.rooms",
+        "n|sch|public",
+        "n|col|public.events.roomId",
+        "n|col|public.rooms.id",
+        "e|uniqueness|public.rooms.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "events"
+      ],
+      "writes": [
+        "s|fk|public.events.events_playerId_players_id_fkey",
+        "n|fk|public.events.events_playerId_players_id_fkey",
+        "e|fk|public.events.events_playerId_players_id_fkey",
+        "n|con|public.events.events_playerId_players_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|tbl|public.players",
+        "n|sch|public",
+        "n|col|public.events.playerId",
+        "n|col|public.players.id",
+        "e|uniqueness|public.players.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "games"
+      ],
+      "writes": [
+        "s|fk|public.games.games_roomId_rooms_id_fkey",
+        "n|fk|public.games.games_roomId_rooms_id_fkey",
+        "e|fk|public.games.games_roomId_rooms_id_fkey",
+        "n|con|public.games.games_roomId_rooms_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.games",
+        "n|sch|public",
+        "n|tbl|public.rooms",
+        "n|sch|public",
+        "n|col|public.games.roomId",
+        "n|col|public.rooms.id",
+        "e|uniqueness|public.rooms.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "players"
+      ],
+      "writes": [
+        "s|fk|public.players.players_roomId_rooms_id_fkey",
+        "n|fk|public.players.players_roomId_rooms_id_fkey",
+        "e|fk|public.players.players_roomId_rooms_id_fkey",
+        "n|con|public.players.players_roomId_rooms_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.players",
+        "n|sch|public",
+        "n|tbl|public.rooms",
+        "n|sch|public",
+        "n|col|public.players.roomId",
+        "n|col|public.rooms.id",
+        "e|uniqueness|public.rooms.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "squares"
+      ],
+      "writes": [
+        "s|fk|public.squares.squares_roomId_rooms_id_fkey",
+        "n|fk|public.squares.squares_roomId_rooms_id_fkey",
+        "e|fk|public.squares.squares_roomId_rooms_id_fkey",
+        "n|con|public.squares.squares_roomId_rooms_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.squares",
+        "n|sch|public",
+        "n|tbl|public.rooms",
+        "n|sch|public",
+        "n|col|public.squares.roomId",
+        "n|col|public.rooms.id",
+        "e|uniqueness|public.rooms.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "squares"
+      ],
+      "writes": [
+        "s|fk|public.squares.squares_gameId_games_id_fkey",
+        "n|fk|public.squares.squares_gameId_games_id_fkey",
+        "e|fk|public.squares.squares_gameId_games_id_fkey",
+        "n|con|public.squares.squares_gameId_games_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.squares",
+        "n|sch|public",
+        "n|tbl|public.games",
+        "n|sch|public",
+        "n|col|public.squares.gameId",
+        "n|col|public.games.id",
+        "e|uniqueness|public.games.id"
+      ]
+    }
+  ],
   "ddl": [
     {
-      "isRlsEnabled": false,
+      "schema": "public",
       "name": "events",
-      "entityType": "tables",
-      "schema": "public"
+      "isRlsEnabled": false,
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
+      "schema": "public",
       "name": "filtered_patterns",
-      "entityType": "tables",
-      "schema": "public"
+      "isRlsEnabled": false,
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
+      "schema": "public",
       "name": "games",
-      "entityType": "tables",
-      "schema": "public"
+      "isRlsEnabled": false,
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
+      "schema": "public",
       "name": "players",
-      "entityType": "tables",
-      "schema": "public"
+      "isRlsEnabled": false,
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
+      "schema": "public",
       "name": "rooms",
-      "entityType": "tables",
-      "schema": "public"
+      "isRlsEnabled": false,
+      "entityType": "tables"
     },
     {
-      "isRlsEnabled": false,
+      "schema": "public",
       "name": "site_notices",
-      "entityType": "tables",
-      "schema": "public"
-    },
-    {
       "isRlsEnabled": false,
-      "name": "squares",
-      "entityType": "tables",
-      "schema": "public"
+      "entityType": "tables"
     },
     {
+      "schema": "public",
+      "name": "squares",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "table": "events",
+      "name": "id",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -65,25 +527,12 @@
         "cache": 1,
         "cycle": false
       },
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
+      "entityType": "columns"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "events",
       "name": "roomId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -91,12 +540,12 @@
       "default": null,
       "generated": null,
       "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "events",
       "name": "playerId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -104,12 +553,12 @@
       "default": null,
       "generated": null,
       "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "events",
       "name": "type",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -117,12 +566,25 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "playerColor",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "events",
+      "name": "playerColor",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "events",
+      "name": "createdAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": true,
@@ -130,12 +592,12 @@
       "default": "now()",
       "generated": null,
       "identity": null,
-      "name": "createdAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "events",
+      "name": "payload",
       "type": "jsonb",
       "typeSchema": null,
       "notNull": true,
@@ -143,12 +605,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "payload",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "filtered_patterns",
+      "name": "id",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -165,12 +627,12 @@
         "cache": 1,
         "cycle": false
       },
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "filtered_patterns"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "filtered_patterns",
+      "name": "pattern",
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -178,12 +640,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "pattern",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "filtered_patterns"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "games",
+      "name": "id",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -200,12 +662,12 @@
         "cache": 1,
         "cycle": false
       },
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "games",
+      "name": "roomId",
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -213,25 +675,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "roomId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
+      "entityType": "columns"
     },
     {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "games",
       "name": "seed",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
-    },
-    {
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -239,12 +688,25 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "variant",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "games",
+      "name": "variant",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "games",
+      "name": "lockout",
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -252,12 +714,12 @@
       "default": "false",
       "generated": null,
       "identity": null,
-      "name": "lockout",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "games",
+      "name": "createdAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": true,
@@ -265,12 +727,12 @@
       "default": "now()",
       "generated": null,
       "identity": null,
-      "name": "createdAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "games",
+      "name": "revealedAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": false,
@@ -278,25 +740,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "revealedAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "games"
+      "entityType": "columns"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "players",
       "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -304,12 +753,12 @@
       "default": null,
       "generated": null,
       "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "players",
       "name": "roomId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -317,12 +766,25 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "name",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "players",
+      "name": "name",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "players",
+      "name": "color",
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -330,25 +792,12 @@
       "default": "'red'",
       "generated": null,
       "identity": null,
-      "name": "color",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
-      "type": "boolean",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "false",
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "players",
       "name": "spectator",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
-    },
-    {
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -356,12 +805,25 @@
       "default": "false",
       "generated": null,
       "identity": null,
-      "name": "online",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "players",
+      "name": "online",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "players",
+      "name": "lastSeenAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": false,
@@ -369,12 +831,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "lastSeenAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "players",
+      "name": "overlayKey",
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -382,25 +844,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "overlayKey",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "players",
       "name": "twitchId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": false,
@@ -408,12 +857,25 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "twitchLogin",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "players",
+      "name": "twitchLogin",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "players",
+      "name": "createdAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": true,
@@ -421,25 +883,12 @@
       "default": "now()",
       "generated": null,
       "identity": null,
-      "name": "createdAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "players"
+      "entityType": "columns"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "rooms",
       "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -447,12 +896,12 @@
       "default": null,
       "generated": null,
       "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "rooms",
       "name": "name",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -460,12 +909,25 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "inviteCode",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "inviteCode",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "rooms",
+      "name": "listed",
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -473,12 +935,12 @@
       "default": "true",
       "generated": null,
       "identity": null,
-      "name": "listed",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "twitchOnly",
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -486,12 +948,12 @@
       "default": "false",
       "generated": null,
       "identity": null,
-      "name": "twitchOnly",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "createdAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": true,
@@ -499,12 +961,12 @@
       "default": "now()",
       "generated": null,
       "identity": null,
-      "name": "createdAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "hideCard",
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -512,12 +974,12 @@
       "default": "false",
       "generated": null,
       "identity": null,
-      "name": "hideCard",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "playerCount",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -525,12 +987,12 @@
       "default": "0",
       "generated": null,
       "identity": null,
-      "name": "playerCount",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "currentGameId",
       "type": "integer",
       "typeSchema": null,
       "notNull": false,
@@ -538,12 +1000,12 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "currentGameId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "lastEventAt",
       "type": "timestamp with time zone",
       "typeSchema": null,
       "notNull": true,
@@ -551,12 +1013,12 @@
       "default": "now()",
       "generated": null,
       "identity": null,
-      "name": "lastEventAt",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "site_notices",
+      "name": "id",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -573,12 +1035,12 @@
         "cache": 1,
         "cycle": false
       },
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "site_notices"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "site_notices",
+      "name": "type",
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -586,25 +1048,12 @@
       "default": "'notice'",
       "generated": null,
       "identity": null,
-      "name": "type",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "site_notices"
+      "entityType": "columns"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "''",
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "site_notices",
       "name": "header",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "site_notices"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -612,25 +1061,25 @@
       "default": "''",
       "generated": null,
       "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "site_notices",
       "name": "body",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "site_notices"
-    },
-    {
-      "type": "boolean",
+      "type": "text",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": "false",
+      "default": "''",
       "generated": null,
       "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "site_notices",
       "name": "visibleToUsers",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "site_notices"
-    },
-    {
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -638,12 +1087,25 @@
       "default": "false",
       "generated": null,
       "identity": null,
-      "name": "visibleToAdmins",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "site_notices"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "site_notices",
+      "name": "visibleToAdmins",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "squares",
+      "name": "id",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -660,51 +1122,12 @@
         "cache": 1,
         "cycle": false
       },
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "columns"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
+      "schema": "public",
+      "table": "squares",
       "name": "roomId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "squares"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "gameId",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "squares"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "slot",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "squares"
-    },
-    {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
@@ -712,12 +1135,51 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "goal",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "squares",
+      "name": "gameId",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "squares",
+      "name": "slot",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "squares",
+      "name": "goal",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "squares",
+      "name": "colorMask",
       "type": "integer",
       "typeSchema": null,
       "notNull": true,
@@ -725,12 +1187,12 @@
       "default": "0",
       "generated": null,
       "identity": null,
-      "name": "colorMask",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "columns"
     },
     {
+      "schema": "public",
+      "table": "events",
+      "name": "events_room_time_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -753,12 +1215,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "events_room_time_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "events"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "events",
+      "name": "events_room_type_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -781,12 +1243,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "events_room_type_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "events"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "games",
+      "name": "games_room_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -809,12 +1271,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "games_room_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "games"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "players",
+      "name": "players_room_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -830,12 +1292,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "players_room_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "players"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "players",
+      "name": "players_online_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -851,12 +1313,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "players_online_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "players"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "rooms_invite_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -872,12 +1334,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "rooms_invite_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "rooms",
+      "name": "rooms_created_players_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -900,12 +1362,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "rooms_created_players_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "rooms"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "squares",
+      "name": "squares_game_slot_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -928,12 +1390,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "squares_game_slot_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "squares",
+      "name": "squares_room_idx",
       "nameExplicit": true,
       "columns": [
         {
@@ -949,12 +1411,12 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "squares_room_idx",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "indexes"
     },
     {
+      "schema": "public",
+      "table": "events",
+      "name": "events_roomId_rooms_id_fkey",
       "nameExplicit": false,
       "columns": [
         "roomId"
@@ -966,12 +1428,12 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "events_roomId_rooms_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "events"
+      "entityType": "fks"
     },
     {
+      "schema": "public",
+      "table": "events",
+      "name": "events_playerId_players_id_fkey",
       "nameExplicit": false,
       "columns": [
         "playerId"
@@ -983,29 +1445,12 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "events_playerId_players_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "events"
+      "entityType": "fks"
     },
     {
-      "nameExplicit": false,
-      "columns": [
-        "roomId"
-      ],
-      "schemaTo": "public",
-      "tableTo": "rooms",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "CASCADE",
+      "schema": "public",
+      "table": "games",
       "name": "games_roomId_rooms_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "games"
-    },
-    {
       "nameExplicit": false,
       "columns": [
         "roomId"
@@ -1017,12 +1462,12 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "players",
       "name": "players_roomId_rooms_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "players"
-    },
-    {
       "nameExplicit": false,
       "columns": [
         "roomId"
@@ -1034,12 +1479,29 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "squares_roomId_rooms_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "fks"
     },
     {
+      "schema": "public",
+      "table": "squares",
+      "name": "squares_roomId_rooms_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "roomId"
+      ],
+      "schemaTo": "public",
+      "tableTo": "rooms",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "squares",
+      "name": "squares_gameId_games_id_fkey",
       "nameExplicit": false,
       "columns": [
         "gameId"
@@ -1051,81 +1513,77 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "squares_gameId_games_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "squares"
+      "entityType": "fks"
     },
     {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": false,
-      "name": "events_pkey",
       "schema": "public",
       "table": "events",
-      "entityType": "pks"
-    },
-    {
+      "name": "events_pkey",
       "columns": [
         "id"
       ],
       "nameExplicit": false,
-      "name": "filtered_patterns_pkey",
+      "entityType": "pks"
+    },
+    {
       "schema": "public",
       "table": "filtered_patterns",
-      "entityType": "pks"
-    },
-    {
+      "name": "filtered_patterns_pkey",
       "columns": [
         "id"
       ],
       "nameExplicit": false,
-      "name": "games_pkey",
+      "entityType": "pks"
+    },
+    {
       "schema": "public",
       "table": "games",
-      "entityType": "pks"
-    },
-    {
+      "name": "games_pkey",
       "columns": [
         "id"
       ],
       "nameExplicit": false,
-      "name": "players_pkey",
+      "entityType": "pks"
+    },
+    {
       "schema": "public",
       "table": "players",
-      "entityType": "pks"
-    },
-    {
+      "name": "players_pkey",
       "columns": [
         "id"
       ],
       "nameExplicit": false,
-      "name": "rooms_pkey",
+      "entityType": "pks"
+    },
+    {
       "schema": "public",
       "table": "rooms",
-      "entityType": "pks"
-    },
-    {
+      "name": "rooms_pkey",
       "columns": [
         "id"
       ],
       "nameExplicit": false,
-      "name": "site_notices_pkey",
+      "entityType": "pks"
+    },
+    {
       "schema": "public",
       "table": "site_notices",
-      "entityType": "pks"
-    },
-    {
+      "name": "site_notices_pkey",
       "columns": [
         "id"
       ],
       "nameExplicit": false,
-      "name": "squares_pkey",
+      "entityType": "pks"
+    },
+    {
       "schema": "public",
       "table": "squares",
+      "name": "squares_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
       "entityType": "pks"
     }
-  ],
-  "renames": []
+  ]
 }
